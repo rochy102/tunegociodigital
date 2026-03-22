@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu Negocio Digital — @tunegociodigitalpy</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c26;
+    --orange: #FF6B35;
+    --orange2: #FF9A3C;
+    --white: #f0eeea;
+    --muted: #666672;
+    --border: #1e1e2a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 60px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* BG decorativo */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ANIMACIONES */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .anim { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+  .a1 { animation-delay: 0.1s; }
+  .a2 { animation-delay: 0.2s; }
+  .a3 { animation-delay: 0.3s; }
+  .a4 { animation-delay: 0.4s; }
+  .a5 { animation-delay: 0.5s; }
+  .a6 { animation-delay: 0.6s; }
+  .a7 { animation-delay: 0.7s; }
+  .a8 { animation-delay: 0.8s; }
+  .a9 { animation-delay: 0.9s; }
+
+  /* WRAPPER */
+  .wrapper {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* AVATAR / LOGO */
+  .avatar-wrap { margin-bottom: 18px; position: relative; }
+  .avatar {
+    width: 88px; height: 88px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, var(--orange), var(--orange2));
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .avatar svg { width: 46px; height: 46px; }
+  .online-badge {
+    position: absolute;
+    bottom: -4px; right: -4px;
+    width: 20px; height: 20px;
+    background: #22c55e;
+    border-radius: 50%;
+    border: 3px solid var(--bg);
+    animation: pulse 2s infinite;
+  }
+
+  /* HEADER INFO */
+  .name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    text-align: center;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .handle {
+    font-size: 14px;
+    color: var(--orange);
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .bio {
+    font-size: 13.5px;
+    color: #999;
+    text-align: center;
+    line-height: 1.65;
+    max-width: 340px;
+    margin-bottom: 20px;
+  }
+  .bio span { color: var(--white); font-weight: 500; }
+
+  /* REDES SOCIALES */
+  .socials {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .social-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 100px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: 'Outfit', sans-serif;
+  }
+  .social-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .social-icon { font-size: 15px; }
+
+  /* SECCIÓN LABEL */
+  .section-label {
+    width: 100%;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding-left: 4px;
+  }
+
+  /* BOTONES PRINCIPALES */
+  .btn-main {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    color: var(--white);
+    margin-bottom: 8px;
+    transition: all 0.22s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-main::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,107,53,0.06), transparent);
+    opacity: 0;
+    transition: opacity 0.22s;
+  }
+  .btn-main:hover { border-color: rgba(255,107,53,0.4); transform: translateY(-2px); }
+  .btn-main:hover::before { opacity: 1; }
+
+  .btn-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .btn-text { flex: 1; }
+  .btn-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+  .btn-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .btn-arrow {
+    font-size: 16px;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .btn-main:hover .btn-arrow { color: var(--orange); transform: translateX(3px); }
+
+  /* BADGE PRECIO */
+  .price-tag {
+    background: rgba(255,107,53,0.12);
+    color: var(--orange);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .price-tag.pro {
+    background: rgba(232,184,75,0.12);
+    color: #e8b84b;
+  }
+  .price-tag.free {
+    background: rgba(34,197,94,0.12);
+    color: #22c55e;
+  }
+
+  /* CALCULADORAS GRID */
+  .calcs-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .calc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 14px;
+    text-decoration: none;
+    color: var(--white);
+    transition: all 0.22s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .calc-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    opacity: 0;
+    transition: opacity 0.22s;
+  }
+  .calc-card:hover { transform: translateY(-2px); }
+  .calc-card:hover::after { opacity: 1; }
+
+  .calc-card.c1::after { background: linear-gradient(90deg, #FF6B35, #FF9A3C); }
+  .calc-card.c2::after { background: linear-gradient(90deg, #F8C8D4, #C2185B); }
+  .calc-card.c3::after { background: linear-gradient(90deg, #1565C0, #42A5F5); }
+  .calc-card.c4::after { background: linear-gradient(90deg, #1B5E20, #66BB6A); }
+  .calc-card.c5::after { background: linear-gradient(90deg, #006064, #26C6DA); }
+
+  .calc-card:hover { border-color: rgba(255,255,255,0.1); }
+
+  .calc-emoji { font-size: 24px; }
+  .calc-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .calc-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .calc-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+    align-self: flex-start;
+    margin-top: auto;
+  }
+  .badge-desde { background: rgba(255,107,53,0.12); color: var(--orange); }
+  .badge-pro { background: rgba(232,184,75,0.12); color: #e8b84b; }
+
+  /* DEMO BTN */
+  .demo-btn {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    text-decoration: none;
+    letter-spacing: 0.3px;
+    transition: opacity 0.2s;
+  }
+  .demo-btn:hover { opacity: 0.7; }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  /* IG DM NOTE */
+  .ig-dm-note {
+    background: rgba(249,168,212,0.12);
+    border: 1px solid rgba(249,168,212,0.35);
+    border-radius: 100px;
+    padding: 7px 18px;
+    font-size: 12px;
+    color: #f9a8d4;
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  /* TOGGLE TIPO */
+  .type-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .toggle-btn {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .toggle-btn.active {
+    background: rgba(255,107,53,0.12);
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  /* INLINE ERROR */
+  .form-error {
+    display: none;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #f87171;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .footer a { color: var(--orange); text-decoration: none; }
+
+  /* CONTADOR DE VISITAS */
+  .visit-counter {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .counter-left { display: flex; align-items: center; gap: 10px; }
+  .counter-icon { font-size: 18px; }
+  .counter-label { font-size: 12px; color: var(--muted); }
+  .counter-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--orange);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .counter-today {
+    font-size: 11px;
+    color: #22c55e;
+    font-weight: 600;
+    background: rgba(34,197,94,0.1);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  /* FORMULARIO CONTACTO */
+  .form-wrap {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 8px;
+  }
+  .form-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .form-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .form-row { margin-bottom: 10px; }
+  .form-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--white);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+  .form-input:focus { border-color: var(--orange); }
+  .form-input::placeholder { color: var(--muted); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .form-select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--white);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+    cursor: pointer;
+  }
+  .form-select:focus { border-color: var(--orange); }
+  .form-select option { background: #1a1a2e; color: var(--white); }
+  .form-btn {
+    width: 100%;
+    background: var(--orange);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .form-btn:hover { background: #e5601f; transform: translateY(-1px); }
+  .form-success {
+    display: none;
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    color: #22c55e;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+  }
+
+  /* PLANES DE PRECIO */
+  .calc-planes {
+    display: flex;
+    gap: 6px;
+    margin-top: auto;
+    flex-wrap: wrap;
+  }
+  .calc-plan {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255,107,53,0.08);
+    border: 1px solid rgba(255,107,53,0.2);
+    border-radius: 8px;
+    padding: 4px 8px;
+    flex: 1;
+  }
+  .calc-plan.plan-pro {
+    background: rgba(232,184,75,0.08);
+    border-color: rgba(232,184,75,0.2);
+  }
+  .plan-precio {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    white-space: nowrap;
+  }
+  .calc-plan.plan-pro .plan-precio {
+    color: #e8b84b;
+  }
+  .calc-plan.plan-premium {
+    background: rgba(167,139,250,0.08);
+    border-color: rgba(167,139,250,0.2);
+    flex: 1 1 100%;
+  }
+  .calc-plan.plan-premium .plan-precio {
+    color: #a78bfa;
+  }
+  .plan-desc {
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .pago-unico {
+    font-size: 10px;
+    color: #22c55e;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  /* SHIMMER badge */
+  .new-badge {
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange2) 50%, var(--orange) 100%);
+    background-size: 200% auto;
+    animation: shimmer 2s linear infinite;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- AVATAR -->
+  <div class="avatar-wrap anim a1">
+    <div class="avatar">
+      <svg viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="15" cy="16" r="5" fill="white" opacity="0.95"/>
+        <circle cx="31" cy="16" r="5" fill="white" opacity="0.95"/>
+        <circle cx="23" cy="32" r="6" fill="white"/>
+        <line x1="15" y1="16" x2="23" y2="32" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+        <line x1="31" y1="16" x2="23" y2="32" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+        <line x1="15" y1="16" x2="31" y2="16" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+        <circle cx="23" cy="32" r="3" fill="#FF6B35"/>
+      </svg>
+      <div class="online-badge"></div>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="name anim a1" id="cfg-nombre">TU NEGOCIO DIGITAL</div>
+  <div class="handle anim a2" id="cfg-handle">@tunegociodigitalpy</div>
+  <p class="bio anim a2">
+    <span id="cfg-bio1">Soluciones digitales para emprendedores 🇵🇾</span><br>
+    <span id="cfg-bio2" style="color:var(--white); font-weight:500;">Calculadoras · Mini Sitios Web · Automatizaciones</span><br>
+    <span id="cfg-bio3">Desde Gs. 150.000 · Entrega en 24hs</span>
+  </p>
+
+  <!-- NOTA IG DM -->
+  <div class="ig-dm-note anim a2">Respondemos solo por Instagram DM · @tunegociodigitalpy</div>
+
+  <!-- REDES -->
+  <div class="socials anim a3">
+    <a href="#" id="link-ig" class="social-btn">
+      <span class="social-icon">📸</span> Instagram
+    </a>
+    <a href="#" id="link-tt" class="social-btn">
+      <span class="social-icon">🎵</span> TikTok
+    </a>
+  </div>
+
+  <!-- CALCULADORAS -->
+  <div class="section-label anim a3">🧮 Calculadoras de Presupuesto</div>
+
+  <div class="calcs-grid anim a4">
+    <a href="#" id="link-calc-dec" class="calc-card c1">
+      <span class="calc-emoji">🎀</span>
+      <div class="calc-name">Decoradoras de Eventos</div>
+      <div class="calc-desc">PDF profesional, precios editables, WhatsApp</div>
+      <div class="calc-planes">
+        <div class="calc-plan">
+          <span class="plan-precio">Gs. 150.000</span>
+          <span class="plan-desc">💬 Con WhatsApp</span>
+        </div>
+        <div class="calc-plan plan-pro">
+          <span class="plan-precio">Gs. 200.000</span>
+          <span class="plan-desc">📄 PDF + Logo</span>
+        </div>
+        <div class="calc-plan plan-premium">
+          <span class="plan-precio">Gs. 300.000</span>
+          <span class="plan-desc">⭐ PDF + Historial + Agenda</span>
+        </div>
+      </div>
+      <span class="pago-unico">✅ Pago único · Sin mensualidad</span>
+      <a href="#" id="demo-calc-dec" class="demo-btn" target="_blank">Ver demo →</a>
+    </a>
+    <a href="#" id="link-calc-rep" class="calc-card c2">
+      <span class="calc-emoji">🎂</span>
+      <div class="calc-name">Reposteras y Pasteleras</div>
+      <div class="calc-desc">Costo por porción, ingredientes, ganancia real</div>
+      <div class="calc-planes">
+        <div class="calc-plan">
+          <span class="plan-precio">Gs. 150.000</span>
+          <span class="plan-desc">💬 Con WhatsApp</span>
+        </div>
+        <div class="calc-plan plan-pro">
+          <span class="plan-precio">Gs. 200.000</span>
+          <span class="plan-desc">📄 PDF + Logo</span>
+        </div>
+        <div class="calc-plan plan-premium">
+          <span class="plan-precio">Gs. 300.000</span>
+          <span class="plan-desc">⭐ PDF + Historial + Agenda</span>
+        </div>
+      </div>
+      <span class="pago-unico">✅ Pago único · Sin mensualidad</span>
+      <a href="#" id="demo-calc-rep" class="demo-btn" target="_blank">Ver demo →</a>
+    </a>
+    <a href="#" id="link-calc-limp" class="calc-card c3">
+      <span class="calc-emoji">🧹</span>
+      <div class="calc-name">Servicios de Limpieza</div>
+      <div class="calc-desc">Por m², tipo de limpieza y frecuencia</div>
+      <div class="calc-planes">
+        <div class="calc-plan">
+          <span class="plan-precio">Gs. 150.000</span>
+          <span class="plan-desc">💬 Con WhatsApp</span>
+        </div>
+        <div class="calc-plan plan-pro">
+          <span class="plan-precio">Gs. 200.000</span>
+          <span class="plan-desc">📄 PDF + Logo</span>
+        </div>
+        <div class="calc-plan plan-premium">
+          <span class="plan-precio">Gs. 300.000</span>
+          <span class="plan-desc">⭐ PDF + Historial + Agenda</span>
+        </div>
+      </div>
+      <span class="pago-unico">✅ Pago único · Sin mensualidad</span>
+      <a href="#" id="demo-calc-limp" class="demo-btn" target="_blank">Ver demo →</a>
+    </a>
+    <a href="#" id="link-calc-ins" class="calc-card c4">
+      <span class="calc-emoji">🖨️</span>
+      <div class="calc-name">Insumos de Impresión</div>
+      <div class="calc-desc">Toner, tintas, cartuchos y servicio técnico</div>
+      <div class="calc-planes">
+        <div class="calc-plan">
+          <span class="plan-precio">Gs. 150.000</span>
+          <span class="plan-desc">💬 Con WhatsApp</span>
+        </div>
+        <div class="calc-plan plan-pro">
+          <span class="plan-precio">Gs. 200.000</span>
+          <span class="plan-desc">📄 PDF + Logo</span>
+        </div>
+        <div class="calc-plan plan-premium">
+          <span class="plan-precio">Gs. 300.000</span>
+          <span class="plan-desc">⭐ PDF + Historial + Agenda</span>
+        </div>
+      </div>
+      <span class="pago-unico">✅ Pago único · Sin mensualidad</span>
+      <a href="#" id="demo-calc-ins" class="demo-btn" target="_blank">Ver demo →</a>
+    </a>
+  </div>
+
+  <a href="#" id="link-calc-il" class="calc-card c5 anim a4" style="width:100%; flex-direction:row; align-items:center; margin-bottom:8px;">
+    <span class="calc-emoji" style="font-size:22px;">🧴</span>
+    <div style="flex:1; margin-left:12px;">
+      <div class="calc-name">Insumos de Limpieza</div>
+      <div class="calc-desc">Para empresas que venden productos de limpieza al por mayor</div>
+      <div class="calc-planes" style="margin-top:6px;">
+        <div class="calc-plan">
+          <span class="plan-precio">Gs. 150.000</span>
+          <span class="plan-desc">💬 Con WhatsApp</span>
+        </div>
+        <div class="calc-plan plan-pro">
+          <span class="plan-precio">Gs. 200.000</span>
+          <span class="plan-desc">📄 PDF + Logo</span>
+        </div>
+        <div class="calc-plan plan-premium">
+          <span class="plan-precio">Gs. 300.000</span>
+          <span class="plan-desc">⭐ PDF + Historial + Agenda</span>
+        </div>
+      </div>
+      <span class="pago-unico">✅ Pago único · Sin mensualidad</span>
+      <a href="#" id="demo-calc-il" class="demo-btn" target="_blank">Ver demo →</a>
+    </div>
+    <span class="new-badge">NUEVO</span>
+  </a>
+
+  <hr class="divider anim a5">
+
+  <!-- SERVICIOS -->
+  <div class="section-label anim a5">⚡ Otros servicios</div>
+
+  <a href="#" id="link-mini" class="btn-main anim a5">
+    <div class="btn-icon" style="background: rgba(167,139,250,0.12);">🌐</div>
+    <div class="btn-text">
+      <div class="btn-title">Mini Sitio Web / Link in Bio</div>
+      <div class="btn-sub">Como este — tu catálogo, links y contacto en una sola página. Sin hosting complicado.</div>
+      <a href="#" id="demo-minisitio" class="demo-btn" target="_blank">Ver demo →</a>
+    </div>
+    <div style="display:flex; gap:6px; margin-top:6px; flex-wrap:wrap;">
+      <span class="price-tag">Gs. 325.000 Básico</span>
+      <span class="price-tag pro">Gs. 450.000 + Historial</span>
+      <span style="background:rgba(167,139,250,0.12);color:#a78bfa;font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;white-space:nowrap;">Gs. 600.000 Premium</span>
+    </div>
+    <span class="btn-arrow">→</span>
+  </a>
+
+  <a href="#" id="link-pedidos" class="btn-main anim a6">
+    <div class="btn-icon" style="background: rgba(34,197,94,0.12);">📋</div>
+    <div class="btn-text">
+      <div class="btn-title">Gestión de Pedidos</div>
+      <div class="btn-sub">Panel con estados: Pendiente → Procesado → Entregado. Se actualiza en tiempo real.</div>
+      <a href="#" id="demo-pedidos" class="demo-btn" target="_blank">Ver demo →</a>
+    </div>
+    <span class="price-tag" style="background:rgba(34,197,94,0.12);color:#22c55e;">Gs. 250K+</span>
+    <span class="btn-arrow">→</span>
+  </a>
+
+  <hr class="divider anim a8">
+
+  <!-- CONTADOR DE VISITAS -->
+  <div class="section-label anim a8">👁️ Visitas al perfil</div>
+  <div class="visit-counter anim a8">
+    <div class="counter-left">
+      <span class="counter-icon">📊</span>
+      <div>
+        <div class="counter-label">Total de visitas</div>
+        <div class="counter-num" id="totalVisits">0</div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div class="counter-today" id="todayVisits">+0 hoy</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;" id="lastVisit">Primera visita</div>
+    </div>
+  </div>
+
+  <hr class="divider anim a8">
+
+  <!-- FORMULARIO CONTACTO -->
+  <div class="section-label anim a8">✉️ Consultá sin compromiso</div>
+  <div class="form-wrap anim a9" id="contacto">
+    <div class="form-title">¿Qué necesitás?</div>
+    <div class="form-sub">Te respondemos por Instagram DM · Lunes a sábado</div>
+
+    <div class="type-toggle">
+      <button class="toggle-btn active" id="toggle-consulta" onclick="setTipo('Consulta')">💬 Consulta</button>
+      <button class="toggle-btn" id="toggle-pedido" onclick="setTipo('Pedido')">🛒 Pedido</button>
+    </div>
+    <input type="hidden" id="f-tipo" value="Consulta" />
+
+    <div class="form-grid">
+      <input type="text" class="form-input" id="f-nombre" placeholder="Tu nombre" />
+      <input type="text" class="form-input" id="f-contacto" placeholder="Tu número de celular" />
+    </div>
+    <div class="form-row">
+      <input type="text" class="form-input" id="f-negocio" placeholder="Nombre de tu negocio" />
+    </div>
+    <div class="form-row">
+      <select class="form-select" id="f-servicio">
+        <option value="">¿Qué producto te interesa? 👇</option>
+        <option value="calc-decoradora">🎀 Calculadora para Decoradoras</option>
+        <option value="calc-reposteria">🎂 Calculadora para Reposteras</option>
+        <option value="calc-limpieza">🧹 Calculadora para Limpieza</option>
+        <option value="calc-insumos">🖨️ Calculadora Insumos Impresión</option>
+        <option value="calc-insumos-limp">🧴 Calculadora Insumos Limpieza</option>
+        <option value="minisitio">🌐 Mini Sitio Web / Link in Bio</option>
+        <option value="pedidos">📋 Gestión de Pedidos con Estados</option>
+        <option value="otro">💬 Consulta general</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <textarea class="form-input" id="f-mensaje" placeholder="Mensaje (opcional)" rows="3" style="resize:none; line-height:1.5;"></textarea>
+    </div>
+    <button class="form-btn" onclick="enviarFormulario()">📨 Enviar por Telegram</button>
+    <div class="form-error" id="form-error"></div>
+    <div class="form-success" id="form-success">
+      ✅ ¡Mensaje enviado! Te respondemos pronto 🎉
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer anim a9">
+    <span id="cfg-pais">Hecho con ❤️ en Paraguay 🇵🇾</span><br>
+    <a href="https://instagram.com/tunegociodigitalpy" id="cfg-footer-handle">@tunegociodigitalpy</a> · Tu Negocio Digital
+  </div>
+
+</div>
+
+<script>
+  // ════════════════════════════════════════════════
+  // CONFIG DEL CLIENTE — solo modificar esta sección
+  // ════════════════════════════════════════════════
+  const CONFIG = {
+    nombre:     "TU NEGOCIO DIGITAL",
+    handle:     "@tunegociodigitalpy",
+    bio:        "Soluciones digitales para emprendedores 🇵🇾",
+    bio2:       "Calculadoras · Mini Sitios Web · Automatizaciones",
+    bio3:       "Desde Gs. 150.000 · Entrega en 24hs",
+    instagram:  "tunegociodigitalpy",
+    tiktok:     "tunegociodigitalpy",
+    colorPrimario:  "#FF6B35",
+    colorSecundario:"#FF9A3C",
+    horario:    "Lunes a sábado",
+    pais:       "Paraguay 🇵🇾",
+    telegramBotToken: "8430047559:AAHHquI7emD__TC2nwAvMHpUB2A5HGUyVJc",
+    telegramChatId:   "1514572204",
+    googleSheetUrl:   "https://script.google.com/macros/s/AKfycbziSlWxeXQvvpTV7Ra8Ya1LX7Ms3UcKFT6YwD4QHroxXGysrLSKghlk6S2esGn5LJmP/exec",
+    // Links de calculadoras (poner URLs reales cuando estén subidas)
+    links: {
+      decoradora:  "#",
+      reposteria:  "#",
+      limpieza:    "#",
+      insumos:     "#",
+      insumosLimp: "#",
+      minisitio:      "#",
+      pedidos:        "#",
+      demoDecoradora:  "demo-calculadora-decoradora.html",
+      demoReposteria:  "demo-calculadora-reposteria.html",
+      demoLimpieza:    "demo-calculadora-limpieza.html",
+      demoInsumos:     "demo-calculadora-decoradora.html",
+      demoInsumosLimp: "demo-calculadora-decoradora.html",
+      demoMinisitio:   "demo-minisitio.html",
+      demoPedidos:     "demo-panel-pedidos.html"
+    }
+  };
+  // ════════════════════════════════════════════════
+  // FIN CONFIG — no modificar nada debajo de aquí
+  // ════════════════════════════════════════════════
+
+  function aplicarConfig() {
+    document.title = CONFIG.nombre + ' — ' + CONFIG.handle;
+    document.getElementById('cfg-nombre').textContent  = CONFIG.nombre;
+    document.getElementById('cfg-handle').textContent  = CONFIG.handle;
+    document.getElementById('cfg-bio1').textContent    = CONFIG.bio;
+    document.getElementById('cfg-bio2').textContent    = CONFIG.bio2;
+    document.getElementById('cfg-bio3').textContent    = CONFIG.bio3;
+    const horarioEl = document.getElementById('cfg-horario');
+    if (horarioEl) horarioEl.textContent = CONFIG.horario;
+    const paisEl = document.getElementById('cfg-pais');
+    if (paisEl) paisEl.textContent = 'Hecho con ❤️ en ' + CONFIG.pais;
+    const footerHandle = document.getElementById('cfg-footer-handle');
+    if (footerHandle) {
+      footerHandle.textContent = CONFIG.handle;
+      footerHandle.href = 'https://instagram.com/' + CONFIG.instagram;
+    }
+
+    // Links redes sociales
+    document.getElementById('link-ig').href = 'https://instagram.com/' + CONFIG.instagram;
+    document.getElementById('link-tt').href = 'https://tiktok.com/@' + CONFIG.tiktok;
+
+    // Links calculadoras
+    document.getElementById('link-calc-dec').href  = CONFIG.links.decoradora;
+    document.getElementById('link-calc-rep').href  = CONFIG.links.reposteria;
+    document.getElementById('link-calc-limp').href = CONFIG.links.limpieza;
+    document.getElementById('link-calc-ins').href  = CONFIG.links.insumos;
+    document.getElementById('link-calc-il').href   = CONFIG.links.insumosLimp;
+    document.getElementById('link-mini').href      = CONFIG.links.minisitio;
+    document.getElementById('link-pedidos').href   = CONFIG.links.pedidos;
+    document.getElementById('demo-calc-dec').href  = CONFIG.links.demoDecoradora;
+    document.getElementById('demo-calc-rep').href  = CONFIG.links.demoReposteria;
+    document.getElementById('demo-calc-limp').href = CONFIG.links.demoLimpieza;
+    document.getElementById('demo-calc-ins').href  = CONFIG.links.demoInsumos;
+    document.getElementById('demo-calc-il').href   = CONFIG.links.demoInsumosLimp;
+    document.getElementById('demo-minisitio').href = CONFIG.links.demoMinisitio;
+    document.getElementById('demo-pedidos').href   = CONFIG.links.demoPedidos;
+
+    // Color primario dinámico
+    document.documentElement.style.setProperty('--orange',  CONFIG.colorPrimario);
+    document.documentElement.style.setProperty('--orange2', CONFIG.colorSecundario);
+  }
+
+  // ── CONTADOR DE VISITAS ──
+  function initCounter() {
+    const today = new Date().toDateString();
+    let total = parseInt(localStorage.getItem('tnd_visits') || '0');
+    let todayCount = parseInt(localStorage.getItem('tnd_today') || '0');
+    let lastDate = localStorage.getItem('tnd_date') || '';
+    let lastVisitTime = localStorage.getItem('tnd_last_time') || '';
+
+    if (lastDate !== today) {
+      todayCount = 0;
+      localStorage.setItem('tnd_date', today);
+    }
+
+    total += 1;
+    todayCount += 1;
+    localStorage.setItem('tnd_visits', total);
+    localStorage.setItem('tnd_today', todayCount);
+    localStorage.setItem('tnd_last_time', new Date().toLocaleTimeString('es-PY', {hour:'2-digit', minute:'2-digit'}));
+
+    animateCounter(total);
+    document.getElementById('todayVisits').textContent = '+' + todayCount + ' hoy';
+
+    if (lastVisitTime) {
+      document.getElementById('lastVisit').textContent = 'Última: ' + lastVisitTime;
+    }
+  }
+
+  function animateCounter(target) {
+    const el = document.getElementById('totalVisits');
+    let current = 0;
+    const step = Math.ceil(target / 40);
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current.toLocaleString();
+      if (current >= target) clearInterval(timer);
+    }, 30);
+  }
+
+  // ── TOGGLE TIPO ──
+  function setTipo(tipo) {
+    document.getElementById('f-tipo').value = tipo;
+    document.getElementById('toggle-consulta').classList.toggle('active', tipo === 'Consulta');
+    document.getElementById('toggle-pedido').classList.toggle('active', tipo === 'Pedido');
+  }
+
+  // ── FORMULARIO ──
+  async function enviarFormulario() {
+    const tipo     = document.getElementById('f-tipo').value;
+    const nombre   = document.getElementById('f-nombre').value.trim();
+    const contacto = document.getElementById('f-contacto').value.trim();
+    const negocio  = document.getElementById('f-negocio').value.trim();
+    const servicioEl = document.getElementById('f-servicio');
+    const producto = servicioEl.options[servicioEl.selectedIndex]?.text || '';
+    const msg      = document.getElementById('f-mensaje').value.trim();
+    const errEl    = document.getElementById('form-error');
+
+    errEl.style.display = 'none';
+
+    if (!nombre || !contacto) {
+      errEl.textContent = 'Por favor completá tu nombre y contacto 😊';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    if (CONFIG.telegramBotToken === 'TU_BOT_TOKEN_AQUI') {
+      errEl.textContent = '⚠️ El bot de Telegram no está configurado aún.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const texto =
+      `📩 Nueva ${tipo} — Tu Negocio Digital\n\n` +
+      `📋 Tipo: ${tipo}\n` +
+      `👤 Nombre: ${nombre}\n` +
+      `📱 Contacto: ${contacto}\n` +
+      `🏪 Negocio: ${negocio || 'No indicado'}\n` +
+      `🛍️ Producto/Servicio: ${producto || 'No indicado'}\n` +
+      (msg ? `💬 Mensaje: ${msg}` : '');
+
+    const btn = document.querySelector('.form-btn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    try {
+      const res = await fetch(
+        `https://api.telegram.org/bot${CONFIG.telegramBotToken}/sendMessage`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: CONFIG.telegramChatId, text: texto })
+        }
+      );
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.description || 'Error al enviar');
+      if (tipo.toLowerCase() === 'pedido' && CONFIG.googleSheetUrl) {
+        fetch(CONFIG.googleSheetUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ nombre, contacto, negocio, producto, mensaje: msg })
+        }).catch(() => {});
+      }
+      document.getElementById('form-success').style.display = 'block';
+      btn.style.display = 'none';
+    } catch (e) {
+      errEl.textContent = '❌ No se pudo enviar: ' + e.message;
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = '📨 Enviar por Telegram';
+    }
+  }
+
+  // ── INIT ──
+  window.addEventListener('load', () => {
+    aplicarConfig();
+    initCounter();
+  });
+</script>
+</body>
+</html>

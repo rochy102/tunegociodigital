@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo — Panel de Pedidos · Tu Negocio Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0a0f;
+    --surface:  #13131a;
+    --surface2: #1c1c26;
+    --border:   #1e1e2a;
+    --orange:   #FF6B35;
+    --orange2:  #FF9A3C;
+    --white:    #f0eeea;
+    --muted:    #666672;
+    --pendiente: #FF6B35;
+    --procesado: #e8b84b;
+    --entregado: #388bff;
+    --terminado: #22c55e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--white); font-family: 'Outfit', sans-serif; min-height: 100vh; padding-bottom: 90px; }
+
+  /* DEMO BADGE */
+  .demo-badge {
+    position: fixed; top: 14px; right: 14px;
+    background: rgba(255,107,53,0.15); border: 1px solid rgba(255,107,53,0.45);
+    color: var(--orange); font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 3px; padding: 4px 13px;
+    border-radius: 100px; z-index: 1000;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 16px 20px; position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--orange), var(--orange2));
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .header-logo svg { width: 22px; height: 22px; }
+  .header-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; line-height: 1; }
+  .header-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+
+  /* COUNTERS */
+  .counters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .counter-pill {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 100px; padding: 3px 10px; font-size: 12px; font-weight: 600;
+  }
+  .counter-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .counter-num { color: var(--white); }
+  .counter-label { color: var(--muted); }
+
+  .reload-btn {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
+    border-radius: 8px; padding: 7px 12px; font-family: 'Outfit', sans-serif;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; transition: all 0.2s; flex-shrink: 0;
+  }
+  .reload-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+  /* MAIN */
+  .main { max-width: 960px; margin: 0 auto; padding: 20px 16px 40px; }
+
+  /* FILTERS */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .filter-btn {
+    background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+    border-radius: 100px; padding: 7px 16px; font-family: 'Outfit', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .filter-btn.active { background: rgba(255,107,53,0.12); border-color: var(--orange); color: var(--orange); }
+  .filter-btn[data-f="Pendiente"].active  { background: rgba(255,107,53,0.12); border-color: var(--pendiente); color: var(--pendiente); }
+  .filter-btn[data-f="Procesado"].active  { background: rgba(232,184,75,0.12); border-color: var(--procesado); color: var(--procesado); }
+  .filter-btn[data-f="Entregado"].active  { background: rgba(56,139,255,0.12); border-color: var(--entregado); color: var(--entregado); }
+  .filter-btn[data-f="Terminado"].active  { background: rgba(34,197,94,0.12);  border-color: var(--terminado); color: var(--terminado); }
+
+  /* GRID */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+
+  /* CARD */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 16px; display: flex; flex-direction: column; gap: 10px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(255,255,255,0.07); }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .card-fecha { font-size: 11px; color: var(--muted); font-weight: 500; }
+
+  .estado-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; }
+  .badge-Pendiente { background: rgba(255,107,53,0.15); color: var(--pendiente); }
+  .badge-Procesado { background: rgba(232,184,75,0.15); color: var(--procesado); }
+  .badge-Entregado { background: rgba(56,139,255,0.15); color: var(--entregado); }
+  .badge-Terminado { background: rgba(34,197,94,0.15);  color: var(--terminado); }
+
+  .card-nombre { font-size: 16px; font-weight: 700; line-height: 1.2; }
+
+  .card-fields { display: flex; flex-direction: column; gap: 5px; }
+  .card-field { display: flex; gap: 8px; font-size: 13px; }
+  .field-label { font-size: 11px; color: var(--muted); min-width: 66px; flex-shrink: 0; padding-top: 1px; }
+  .field-val { color: var(--white); line-height: 1.4; }
+  .field-val.empty { color: var(--muted); font-style: italic; }
+
+  .card-footer { display: flex; gap: 8px; align-items: center; padding-top: 6px; border-top: 1px solid var(--border); }
+
+  .estado-select {
+    flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 28px 8px 10px; color: var(--white); font-family: 'Outfit', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer; outline: none; transition: border-color 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23666672' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .estado-select:focus { border-color: var(--orange); }
+  .estado-select option { background: #1a1a2e; }
+  .estado-select.sel-Pendiente { border-color: rgba(255,107,53,0.4); color: var(--pendiente); }
+  .estado-select.sel-Procesado { border-color: rgba(232,184,75,0.4); color: var(--procesado); }
+  .estado-select.sel-Entregado { border-color: rgba(56,139,255,0.4); color: var(--entregado); }
+  .estado-select.sel-Terminado { border-color: rgba(34,197,94,0.4);  color: var(--terminado); }
+
+  .delete-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    border-radius: 8px; width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 15px; flex-shrink: 0; transition: all 0.2s;
+  }
+  .delete-btn:hover { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.08); }
+
+  /* EMPTY */
+  .empty {
+    grid-column: 1 / -1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 60px 20px;
+    gap: 10px; text-align: center;
+  }
+  .empty-icon { font-size: 44px; opacity: 0.35; }
+  .empty-title { font-size: 15px; font-weight: 600; color: var(--muted); }
+
+  /* STICKY CTA */
+  .cta-wrap {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px 16px;
+    background: linear-gradient(to top, var(--bg) 70%, transparent); z-index: 998;
+  }
+  .cta-btn {
+    display: block; max-width: 480px; margin: 0 auto;
+    background: var(--orange); color: white; border: none; border-radius: 14px;
+    padding: 14px 20px; font-family: 'Outfit', sans-serif; font-size: 13px;
+    font-weight: 700; text-align: center; text-decoration: none; transition: background 0.2s;
+  }
+  .cta-btn:hover { background: #e5601f; }
+  .back-btn {
+    position: fixed; top: 16px; left: 16px;
+    background: #13131a; border: 1px solid #1e1e2a; border-radius: 100px;
+    color: #FF6B35; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 8px 16px; text-decoration: none; z-index: 1001; transition: all 0.2s;
+  }
+  .back-btn:hover { border-color: #FF6B35; }
+</style>
+</head>
+<body>
+
+<a href="linktree-tunegociodigital.html" class="back-btn">← Volver</a>
+<div class="demo-badge">DEMO</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="header-logo">
+      <svg viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="15" cy="16" r="5" fill="white" opacity="0.95"/>
+        <circle cx="31" cy="16" r="5" fill="white" opacity="0.95"/>
+        <circle cx="23" cy="32" r="6" fill="white"/>
+        <line x1="15" y1="16" x2="23" y2="32" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+        <line x1="31" y1="16" x2="23" y2="32" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+        <line x1="15" y1="16" x2="31" y2="16" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+        <circle cx="23" cy="32" r="3" fill="#FF6B35"/>
+      </svg>
+    </div>
+    <div>
+      <div class="header-title">TU NEGOCIO DIGITAL</div>
+      <div class="header-sub">Panel de Pedidos</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="counters" id="counters"></div>
+    <button class="reload-btn" onclick="render()">↻ Actualizar</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="cta-wrap">
+  <a href="linktree-tunegociodigital.html#contacto" class="cta-btn">
+    📋 Quiero mi panel de pedidos → Pedir ahora
+  </a>
+</div>
+
+<script>
+  const ESTADOS = ['Pendiente', 'Procesado', 'Entregado', 'Terminado'];
+  const COLOR = { Pendiente:'#FF6B35', Procesado:'#e8b84b', Entregado:'#388bff', Terminado:'#22c55e' };
+
+  let pedidos = [
+    { id:1, fecha:'21/03/2026 09:14', nombre:'María González',  contacto:'@mariag_eventos',  negocio:'Eventos Rossy',        producto:'Calculadora Decoradora',  mensaje:'Necesito para quinceañera',   estado:'Pendiente' },
+    { id:2, fecha:'20/03/2026 15:32', nombre:'Laura Benítez',   contacto:'0981-234567',       negocio:'Dulce Arte',           producto:'Calculadora Repostería',  mensaje:'Torta para 50 personas',      estado:'Procesado' },
+    { id:3, fecha:'19/03/2026 11:05', nombre:'Carlos Núñez',    contacto:'@carlosn',          negocio:'LimpiaHogar',          producto:'Gestión de Pedidos',      mensaje:'Quiero para mi negocio',      estado:'Entregado' },
+    { id:4, fecha:'18/03/2026 08:47', nombre:'Ana Martínez',    contacto:'0991-345678',       negocio:'Impresiones Rápidas',  producto:'Calculadora Insumos',     mensaje:'Consulta de precios',         estado:'Pendiente' },
+    { id:5, fecha:'17/03/2026 16:20', nombre:'Sofía Ramírez',   contacto:'@sofiar',           negocio:'Estética Bella',       producto:'Mini Sitio Web',          mensaje:'Me interesa el plan pro',     estado:'Terminado' },
+  ];
+
+  let filtro = 'Todos';
+
+  function cambiarEstado(id, nuevoEstado) {
+    const p = pedidos.find(x => x.id === id);
+    if (p) { p.estado = nuevoEstado; render(); }
+  }
+
+  function eliminar(id) {
+    if (!confirm('¿Eliminar este pedido? Esta acción no se puede deshacer.')) return;
+    pedidos = pedidos.filter(x => x.id !== id);
+    render();
+  }
+
+  function setFiltro(f) {
+    filtro = f;
+    render();
+  }
+
+  function render() {
+    renderFilters();
+    renderCounters();
+    renderGrid();
+  }
+
+  function renderFilters() {
+    const filtros = ['Todos', ...ESTADOS];
+    document.getElementById('filters').innerHTML = filtros.map(f => `
+      <button class="filter-btn${filtro === f ? ' active' : ''}" data-f="${f}" onclick="setFiltro('${f}')">
+        ${f}${f !== 'Todos' ? ` (${pedidos.filter(p => p.estado === f).length})` : ''}
+      </button>`).join('');
+  }
+
+  function renderCounters() {
+    document.getElementById('counters').innerHTML = ESTADOS.map(e => `
+      <div class="counter-pill">
+        <div class="counter-dot" style="background:${COLOR[e]}"></div>
+        <span class="counter-num">${pedidos.filter(p => p.estado === e).length}</span>
+        <span class="counter-label">${e}</span>
+      </div>`).join('');
+  }
+
+  function renderGrid() {
+    const lista = filtro === 'Todos' ? pedidos : pedidos.filter(p => p.estado === filtro);
+    if (lista.length === 0) {
+      document.getElementById('grid').innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">Sin pedidos en este estado</div>
+        </div>`;
+      return;
+    }
+    document.getElementById('grid').innerHTML = lista.map(p => {
+      const opts = ESTADOS.map(e => `<option value="${e}"${e === p.estado ? ' selected' : ''}>${e}</option>`).join('');
+      const field = (label, val) =>
+        `<div class="card-field"><span class="field-label">${label}</span><span class="field-val${val ? '' : ' empty'}">${val || 'No indicado'}</span></div>`;
+      return `
+        <div class="card">
+          <div class="card-top">
+            <span class="card-fecha">${p.fecha}</span>
+            <span class="estado-badge badge-${p.estado}">${p.estado}</span>
+          </div>
+          <div class="card-nombre">${p.nombre}</div>
+          <div class="card-fields">
+            ${field('Contacto',  p.contacto)}
+            ${field('Negocio',   p.negocio)}
+            ${field('Producto',  p.producto)}
+            ${field('Mensaje',   p.mensaje)}
+          </div>
+          <div class="card-footer">
+            <select class="estado-select sel-${p.estado}" onchange="cambiarEstado(${p.id}, this.value)">${opts}</select>
+            <button class="delete-btn" onclick="eliminar(${p.id})" title="Eliminar">🗑</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  render();
+</script>
+</body>
+</html>

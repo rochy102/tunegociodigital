@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo — Calculadora Limpieza · LimpiaHogar</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c26;
+    --border: #1e1e2a;
+    --orange: #FF6B35;
+    --orange2: #FF9A3C;
+    --white: #f0eeea;
+    --muted: #666672;
+    --blue: #388bff;
+    --green: #22c55e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--white);
+    font-family: 'Outfit', sans-serif; min-height: 100vh; padding-bottom: 90px;
+  }
+  .page { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
+
+  /* DEMO BADGE */
+  .demo-badge {
+    position: fixed; top: 14px; right: 14px;
+    background: rgba(255,107,53,0.15); border: 1px solid rgba(255,107,53,0.45);
+    color: var(--orange); font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 3px; padding: 4px 13px;
+    border-radius: 100px; z-index: 999;
+  }
+
+  /* CARD */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 12px; }
+
+  /* HEADER */
+  .biz-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .biz-avatar {
+    width: 54px; height: 54px; border-radius: 14px;
+    background: linear-gradient(135deg, #1565C0, #42A5F5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .biz-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; line-height: 1.1; }
+  .biz-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  .cliente-row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
+  }
+  .cliente-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--muted); white-space: nowrap; }
+  .cliente-input {
+    background: transparent; border: none; color: var(--white);
+    font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500; outline: none; width: 100%;
+  }
+
+  /* SECTION LABEL */
+  .sec-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+  /* TABLE */
+  .table-scroll { overflow-x: auto; }
+  .items-table { width: 100%; border-collapse: collapse; min-width: 320px; }
+  .items-table th {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); padding: 0 8px 10px; text-align: left;
+  }
+  .items-table th.r { text-align: right; }
+  .items-table td { padding: 6px 8px; vertical-align: middle; border-top: 1px solid var(--border); }
+  .item-name { font-size: 13px; font-weight: 500; color: var(--white); }
+  .num-input {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 10px; color: var(--white); font-family: 'Outfit', sans-serif;
+    font-size: 13px; font-weight: 500; outline: none; width: 100%;
+    text-align: right; transition: border-color 0.2s;
+  }
+  .num-input:focus { border-color: var(--orange); }
+
+  /* FRECUENCIA PILLS */
+  .frec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .frec-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 8px; color: var(--muted);
+    font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; text-align: center; transition: all 0.2s;
+  }
+  .frec-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .frec-btn.active { background: rgba(56,139,255,0.12); border-color: var(--blue); color: var(--blue); }
+  .frec-btn.active.descuento { background: rgba(34,197,94,0.12); border-color: var(--green); color: var(--green); }
+
+  .descuento-banner {
+    background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25);
+    border-radius: 10px; padding: 10px 14px; margin-top: 10px;
+    display: none; align-items: center; gap: 8px;
+  }
+  .descuento-banner.visible { display: flex; }
+  .descuento-icon { font-size: 18px; }
+  .descuento-text { font-size: 13px; font-weight: 600; color: var(--green); }
+  .descuento-sub { font-size: 11px; color: var(--muted); }
+
+  /* RESUMEN */
+  .res-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+  .res-row:last-of-type { border-bottom: none; }
+  .res-label { color: var(--muted); }
+  .res-val { font-weight: 600; }
+  .res-tachado { text-decoration: line-through; color: var(--muted); font-weight: 400; }
+  .res-green { color: var(--green); }
+
+  .total-block {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0 0; margin-top: 6px; border-top: 1px solid var(--border);
+  }
+  .total-label { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; }
+  .total-val { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; color: var(--orange); }
+
+  /* BOTONES */
+  .btn-pdf {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px; color: var(--white);
+    font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-bottom: 8px; text-decoration: none; transition: all 0.2s;
+  }
+  .btn-pdf:hover { border-color: var(--orange); color: var(--orange); }
+  .btn-wa {
+    width: 100%; background: #25D366; border: none; border-radius: 12px;
+    padding: 14px; color: white; font-family: 'Outfit', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; text-decoration: none; transition: background 0.2s;
+  }
+  .btn-wa:hover { background: #1da84f; }
+
+  /* FOOTER */
+  .footer { text-align: center; font-size: 11px; color: var(--muted); padding: 22px 0 4px; line-height: 1.8; }
+  .footer a { color: var(--orange); text-decoration: none; }
+
+  /* STICKY CTA */
+  .cta-wrap {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px 16px;
+    background: linear-gradient(to top, var(--bg) 70%, transparent); z-index: 998;
+  }
+  .cta-btn {
+    display: block; max-width: 480px; margin: 0 auto;
+    background: var(--orange); color: white; border: none; border-radius: 14px;
+    padding: 14px 20px; font-family: 'Outfit', sans-serif; font-size: 13px;
+    font-weight: 700; text-align: center; text-decoration: none; transition: background 0.2s;
+  }
+  .cta-btn:hover { background: #e5601f; }
+  .back-btn {
+    position: fixed; top: 16px; left: 16px;
+    background: #13131a; border: 1px solid #1e1e2a; border-radius: 100px;
+    color: #FF6B35; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 8px 16px; text-decoration: none; z-index: 999; transition: all 0.2s;
+  }
+  .back-btn:hover { border-color: #FF6B35; }
+</style>
+</head>
+<body>
+
+<a href="linktree-tunegociodigital.html" class="back-btn">← Volver</a>
+<div class="demo-badge">DEMO</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="card">
+    <div class="biz-header">
+      <div class="biz-avatar">🧹</div>
+      <div>
+        <div class="biz-name">LIMPIAHOGAR</div>
+        <div class="biz-sub">Servicio Profesional de Limpieza</div>
+      </div>
+    </div>
+    <div class="cliente-row">
+      <span class="cliente-label">CLIENTE</span>
+      <input class="cliente-input" type="text" value="Oficinas Centro Empresarial — Piso 3" placeholder="Nombre del cliente...">
+    </div>
+  </div>
+
+  <!-- SERVICIOS -->
+  <div class="card">
+    <div class="sec-label">🧽 Servicios incluidos</div>
+    <div class="table-scroll">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Servicio</th>
+            <th style="width:110px;" class="r">Precio</th>
+          </tr>
+        </thead>
+        <tbody id="srvBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FRECUENCIA -->
+  <div class="card">
+    <div class="sec-label">📅 Frecuencia del servicio</div>
+    <div class="frec-grid">
+      <button class="frec-btn active" data-frec="unica" data-desc="0" onclick="setFrecuencia(this)">Única vez</button>
+      <button class="frec-btn" data-frec="semanal" data-desc="0" onclick="setFrecuencia(this)">Semanal</button>
+      <button class="frec-btn" data-frec="quincenal" data-desc="0" onclick="setFrecuencia(this)">Quincenal</button>
+      <button class="frec-btn descuento" data-frec="mensual" data-desc="10" onclick="setFrecuencia(this)">
+        Mensual <span style="font-size:11px; opacity:0.8;">−10%</span>
+      </button>
+    </div>
+    <div class="descuento-banner" id="descuentoBanner">
+      <span class="descuento-icon">🎉</span>
+      <div>
+        <div class="descuento-text">¡Descuento por cliente mensual!</div>
+        <div class="descuento-sub">Se aplica automáticamente al total</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="card">
+    <div class="sec-label">💰 Resumen del presupuesto</div>
+    <div class="res-row">
+      <span class="res-label">Total servicios</span>
+      <span class="res-val" id="rBruto">Gs. 0</span>
+    </div>
+    <div class="res-row" id="rowDescuento" style="display:none;">
+      <span class="res-label">Descuento mensual (−10%)</span>
+      <span class="res-val res-green" id="rDescuento">−Gs. 0</span>
+    </div>
+    <div class="total-block">
+      <span class="total-label">TOTAL</span>
+      <span class="total-val" id="rTotal">Gs. 0</span>
+    </div>
+  </div>
+
+  <!-- ACCIONES -->
+  <button class="btn-pdf" onclick="this.textContent='✅ Función disponible en la versión real'; setTimeout(()=>this.innerHTML='📄 Generar PDF',2000)">
+    📄 Generar PDF
+  </button>
+  <a href="https://instagram.com/tunegociodigitalpy" target="_blank" class="btn-wa">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884z"/></svg>
+    Enviar por WhatsApp
+  </a>
+
+  <div class="footer">
+    Presupuesto generado con<br>
+    <a href="https://instagram.com/tunegociodigitalpy" target="_blank">Tu Negocio Digital · @tunegociodigitalpy</a>
+  </div>
+
+</div>
+
+<div class="cta-wrap">
+  <a href="linktree-tunegociodigital.html#contacto" class="cta-btn">
+    🧹 Quiero mi calculadora de limpieza → Pedir ahora
+  </a>
+</div>
+
+<script>
+  const SERVICIOS = [
+    { nombre: 'Limpieza general hogar 120m²', precio: 180000 },
+    { nombre: 'Limpieza de vidrios (x8)',      precio: 40000 },
+    { nombre: 'Desinfección baños (x2)',        precio: 35000 },
+    { nombre: 'Limpieza cocina profunda',       precio: 55000 },
+    { nombre: 'Productos de limpieza (incl.)',  precio: 45000 },
+    { nombre: 'Traslado',                       precio: 20000 },
+  ];
+
+  let descuentoPct = 0;
+
+  function fmt(n) {
+    return 'Gs. ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function renderTabla() {
+    document.getElementById('srvBody').innerHTML = SERVICIOS.map((srv, i) => `
+      <tr>
+        <td><span class="item-name">${srv.nombre}</span></td>
+        <td><input class="num-input" type="number" id="prc${i}" value="${srv.precio}" min="0" oninput="calcular()"></td>
+      </tr>`).join('');
+  }
+
+  function setFrecuencia(btn) {
+    document.querySelectorAll('.frec-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    descuentoPct = parseInt(btn.dataset.desc) || 0;
+    const banner = document.getElementById('descuentoBanner');
+    banner.classList.toggle('visible', descuentoPct > 0);
+    calcular();
+  }
+
+  function calcular() {
+    let bruto = 0;
+    SERVICIOS.forEach((_, i) => {
+      const prc = parseFloat(document.getElementById('prc' + i).value) || 0;
+      bruto += prc;
+    });
+
+    const descMonto = bruto * descuentoPct / 100;
+    const total     = bruto - descMonto;
+
+    document.getElementById('rBruto').textContent   = fmt(bruto);
+    document.getElementById('rDescuento').textContent = '−' + fmt(descMonto);
+    document.getElementById('rTotal').textContent   = fmt(total);
+
+    const rowDesc = document.getElementById('rowDescuento');
+    rowDesc.style.display = descuentoPct > 0 ? 'flex' : 'none';
+  }
+
+  renderTabla();
+  calcular();
+</script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo — Eventos & Detalles · Rossy Díaz</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c26;
+    --border: #1e1e2a;
+    --accent: #d63384;
+    --accent2: #f472b6;
+    --white: #f0eeea;
+    --muted: #666672;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--white);
+    font-family: 'Outfit', sans-serif; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px 110px; position: relative; overflow-x: hidden;
+  }
+  body::before {
+    content: ''; position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(214,51,132,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes pulse  { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+
+  .anim { opacity:0; animation: fadeUp 0.6s ease forwards; }
+  .a1{animation-delay:0.1s} .a2{animation-delay:0.2s} .a3{animation-delay:0.3s}
+  .a4{animation-delay:0.4s} .a5{animation-delay:0.5s} .a6{animation-delay:0.6s}
+  .a7{animation-delay:0.7s} .a8{animation-delay:0.8s}
+
+  .wrapper { width:100%; max-width:480px; display:flex; flex-direction:column; align-items:center; }
+
+  /* DEMO BADGE */
+  .demo-badge {
+    position: fixed; top: 14px; right: 14px;
+    background: rgba(214,51,132,0.15); border: 1px solid rgba(214,51,132,0.45);
+    color: var(--accent); font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 3px; padding: 4px 13px;
+    border-radius: 100px; z-index: 999;
+  }
+
+  /* AVATAR */
+  .avatar-wrap { margin-bottom: 18px; position: relative; }
+  .avatar {
+    width: 88px; height: 88px; border-radius: 24px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .avatar-initials {
+    font-family: 'Bebas Neue', sans-serif; font-size: 34px;
+    letter-spacing: 3px; color: white;
+  }
+  .online-badge {
+    position: absolute; bottom: -4px; right: -4px;
+    width: 20px; height: 20px; background: #22c55e;
+    border-radius: 50%; border: 3px solid var(--bg);
+    animation: pulse 2s infinite;
+  }
+
+  /* BIO */
+  .name {
+    font-family: 'Bebas Neue', sans-serif; font-size: 30px;
+    letter-spacing: 2px; text-align: center; line-height: 1; margin-bottom: 4px;
+  }
+  .handle { font-size: 14px; color: var(--accent); text-align: center; margin-bottom: 10px; font-weight: 500; }
+  .bio {
+    font-size: 13.5px; color: #999; text-align: center;
+    line-height: 1.7; max-width: 340px; margin-bottom: 18px;
+  }
+  .bio span { color: var(--white); font-weight: 500; }
+
+  /* DM NOTE */
+  .dm-note {
+    background: rgba(244,114,182,0.10); border: 1px solid rgba(244,114,182,0.30);
+    border-radius: 100px; padding: 7px 18px; font-size: 12px; color: var(--accent2);
+    text-align: center; margin-bottom: 22px; font-weight: 500;
+  }
+
+  /* SOCIALS */
+  .socials { display: flex; gap: 10px; margin-bottom: 32px; }
+  .social-btn {
+    background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+    font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: 100px;
+    text-decoration: none; display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+  }
+  .social-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* SECTION LABEL */
+  .sec-label {
+    width: 100%; text-align: left; font-size: 11px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 10px; padding-left: 4px;
+  }
+
+  /* SERVICIOS GRID */
+  .srv-grid { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .srv-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px 14px; text-decoration: none; color: var(--white);
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative; overflow: hidden; transition: all 0.22s;
+  }
+  .srv-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; opacity: 0; transition: opacity 0.22s;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .srv-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.08); }
+  .srv-card:hover::after { opacity: 1; }
+  .srv-emoji { font-size: 24px; }
+  .srv-name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+  .srv-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+  .srv-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 100px; align-self: flex-start; margin-top: auto;
+    background: rgba(214,51,132,0.12); color: var(--accent);
+  }
+
+  /* WA BUTTON */
+  .wa-btn {
+    width: 100%; background: #25D366; color: white; border: none; border-radius: 14px;
+    padding: 16px 20px; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    cursor: pointer; text-decoration: none; transition: all 0.2s; margin-bottom: 8px;
+  }
+  .wa-btn:hover { background: #1da84f; transform: translateY(-2px); }
+
+  /* GALERÍA */
+  .gallery { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+  .gallery-item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    aspect-ratio: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 6px; overflow: hidden;
+    transition: all 0.22s; position: relative;
+  }
+  .gallery-item:hover { border-color: rgba(214,51,132,0.3); transform: translateY(-2px); }
+  .gallery-item::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(214,51,132,0.06), transparent);
+    opacity: 0; transition: opacity 0.22s;
+  }
+  .gallery-item:hover::after { opacity: 1; }
+  .gallery-emoji { font-size: 40px; }
+  .gallery-caption { font-size: 10px; color: var(--muted); font-weight: 500; }
+
+  /* DIVIDER */
+  .divider { width: 100%; border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* FOOTER */
+  .footer { text-align: center; font-size: 12px; color: var(--muted); line-height: 1.7; margin-top: 30px; }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer-tnd { margin-top: 8px; font-size: 11px; }
+
+  /* STICKY CTA */
+  .cta-wrap {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px 16px;
+    background: linear-gradient(to top, var(--bg) 70%, transparent); z-index: 998;
+  }
+  .cta-btn {
+    display: block; max-width: 480px; margin: 0 auto;
+    background: var(--accent); color: white; border: none; border-radius: 14px;
+    padding: 14px 20px; font-family: 'Outfit', sans-serif; font-size: 13px;
+    font-weight: 700; text-align: center; text-decoration: none; transition: background 0.2s;
+  }
+  .cta-btn:hover { background: #b02a6e; }
+  .back-btn {
+    position: fixed; top: 16px; left: 16px;
+    background: #13131a; border: 1px solid #1e1e2a; border-radius: 100px;
+    color: #FF6B35; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 8px 16px; text-decoration: none; z-index: 999; transition: all 0.2s;
+  }
+  .back-btn:hover { border-color: #FF6B35; }
+</style>
+</head>
+<body>
+
+<a href="linktree-tunegociodigital.html" class="back-btn">← Volver</a>
+<div class="demo-badge">DEMO</div>
+
+<div class="wrapper">
+
+  <!-- AVATAR -->
+  <div class="avatar-wrap anim a1">
+    <div class="avatar">
+      <span class="avatar-initials">RD</span>
+    </div>
+    <div class="online-badge"></div>
+  </div>
+
+  <!-- BIO -->
+  <div class="name anim a1">EVENTOS &amp; DETALLES</div>
+  <div class="handle anim a2">@rossydecoraciones</div>
+  <p class="bio anim a2">
+    Decoraciones para tus momentos especiales 🎀<br>
+    <span>Quinceañeras · Casamientos · Baby Shower</span><br>
+    Presupuesto gratis · Asunción y alrededores
+  </p>
+
+  <!-- DM NOTE -->
+  <div class="dm-note anim a2">Respondemos por Instagram DM y WhatsApp 💬</div>
+
+  <!-- REDES -->
+  <div class="socials anim a3">
+    <a href="https://instagram.com/rossydecoraciones" target="_blank" class="social-btn">
+      <span>📸</span> Instagram
+    </a>
+    <a href="#" class="social-btn"><span>🎵</span> TikTok</a>
+    <a href="#" class="social-btn"><span>💬</span> WhatsApp</a>
+  </div>
+
+  <!-- SERVICIOS -->
+  <div class="sec-label anim a4">🎀 Mis servicios</div>
+
+  <div class="srv-grid anim a4">
+    <a href="#" class="srv-card">
+      <span class="srv-emoji">🏛️</span>
+      <div class="srv-name">Decoración de salón</div>
+      <div class="srv-desc">Centros de mesa, telas y ambientación completa</div>
+      <span class="srv-badge">Desde Gs. 350K</span>
+    </a>
+    <a href="#" class="srv-card">
+      <span class="srv-emoji">🎈</span>
+      <div class="srv-name">Arcos de globos</div>
+      <div class="srv-desc">Orgánicos, cromados y personalizados por color</div>
+      <span class="srv-badge">Desde Gs. 180K</span>
+    </a>
+    <a href="#" class="srv-card">
+      <span class="srv-emoji">🍬</span>
+      <div class="srv-name">Mesa de dulces</div>
+      <div class="srv-desc">Candy bar con decoración temática completa</div>
+      <span class="srv-badge">Desde Gs. 280K</span>
+    </a>
+    <a href="#" class="srv-card">
+      <span class="srv-emoji">✨</span>
+      <div class="srv-name">Decoración temática</div>
+      <div class="srv-desc">Unicornio, princesas, superheroes y más</div>
+      <span class="srv-badge">Desde Gs. 220K</span>
+    </a>
+  </div>
+
+  <!-- WA BTN -->
+  <a href="#" class="wa-btn anim a5">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884z"/></svg>
+    Pedir presupuesto por WhatsApp
+  </a>
+
+  <hr class="divider anim a5">
+
+  <!-- GALERÍA -->
+  <div class="sec-label anim a6">📸 Trabajos recientes</div>
+  <div class="gallery anim a6">
+    <div class="gallery-item">
+      <span class="gallery-emoji">🎀</span>
+      <span class="gallery-caption">Quinceañera</span>
+    </div>
+    <div class="gallery-item">
+      <span class="gallery-emoji">🎊</span>
+      <span class="gallery-caption">Cumpleaños</span>
+    </div>
+    <div class="gallery-item">
+      <span class="gallery-emoji">🎈</span>
+      <span class="gallery-caption">Baby Shower</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer anim a8">
+    <div>Rossy Díaz · <a href="https://instagram.com/rossydecoraciones" target="_blank">@rossydecoraciones</a></div>
+    <div>Asunción, Paraguay 🇵🇾</div>
+    <div class="footer-tnd">
+      Mini sitio creado por <a href="https://instagram.com/tunegociodigitalpy" target="_blank">Tu Negocio Digital</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="cta-wrap">
+  <a href="linktree-tunegociodigital.html#contacto" class="cta-btn">
+    🌐 Quiero mi mini sitio web → Pedir ahora
+  </a>
+</div>
+
+</body>
+</html>

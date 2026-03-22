@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo — Calculadora Repostería · Dulce Arte</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c26;
+    --border: #1e1e2a;
+    --orange: #FF6B35;
+    --orange2: #FF9A3C;
+    --white: #f0eeea;
+    --muted: #666672;
+    --pink: #C2185B;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--white);
+    font-family: 'Outfit', sans-serif; min-height: 100vh; padding-bottom: 90px;
+  }
+  .page { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
+
+  /* DEMO BADGE */
+  .demo-badge {
+    position: fixed; top: 14px; right: 14px;
+    background: rgba(255,107,53,0.15); border: 1px solid rgba(255,107,53,0.45);
+    color: var(--orange); font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 3px; padding: 4px 13px;
+    border-radius: 100px; z-index: 999;
+  }
+
+  /* CARD */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 12px; }
+
+  /* HEADER */
+  .biz-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .biz-avatar {
+    width: 54px; height: 54px; border-radius: 14px;
+    background: linear-gradient(135deg, #F8C8D4, var(--pink));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .biz-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1.5px; line-height: 1.1; }
+  .biz-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  .producto-row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
+  }
+  .producto-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--muted); white-space: nowrap; }
+  .producto-input {
+    background: transparent; border: none; color: var(--white);
+    font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500; outline: none; width: 100%;
+  }
+
+  /* SECTION LABEL */
+  .sec-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+  /* TABLE */
+  .table-scroll { overflow-x: auto; }
+  .items-table { width: 100%; border-collapse: collapse; min-width: 360px; }
+  .items-table th {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); padding: 0 6px 10px; text-align: left;
+  }
+  .items-table th.r { text-align: right; }
+  .items-table td { padding: 5px 6px; vertical-align: middle; border-top: 1px solid var(--border); }
+  .item-name { font-size: 13px; font-weight: 500; color: var(--white); }
+  .num-input {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 8px; color: var(--white); font-family: 'Outfit', sans-serif;
+    font-size: 13px; font-weight: 500; outline: none; width: 100%;
+    text-align: right; transition: border-color 0.2s;
+  }
+  .num-input:focus { border-color: var(--orange); }
+  .sub-cell { font-size: 13px; font-weight: 600; color: var(--orange); text-align: right; white-space: nowrap; }
+
+  /* PARAM GRID */
+  .param-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0; }
+  .param-item { display: flex; flex-direction: column; gap: 6px; }
+  .param-label { font-size: 11px; font-weight: 600; color: var(--muted); }
+  .param-input {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 12px; color: var(--white); font-family: 'Outfit', sans-serif;
+    font-size: 14px; font-weight: 600; outline: none; text-align: right;
+    transition: border-color 0.2s; width: 100%;
+  }
+  .param-input:focus { border-color: var(--orange); }
+  .param-unit { font-size: 11px; color: var(--muted); margin-top: 3px; text-align: right; }
+
+  /* SLIDER */
+  .slider-wrap { display: flex; align-items: center; gap: 14px; }
+  .slider-label { font-size: 13px; color: var(--muted); white-space: nowrap; }
+  input[type="range"] {
+    flex: 1; -webkit-appearance: none; height: 4px;
+    border-radius: 2px; background: var(--surface2); outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--orange); cursor: pointer;
+    border: 3px solid var(--bg); box-shadow: 0 0 0 2px rgba(255,107,53,0.25);
+  }
+  .slider-val {
+    font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+    color: var(--orange); min-width: 52px; text-align: right; letter-spacing: 1px;
+  }
+
+  /* RESUMEN */
+  .res-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+  .res-label { color: var(--muted); }
+  .res-val { font-weight: 600; }
+  .res-highlight { color: var(--orange); }
+
+  .divider-line { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+  .total-block {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0 2px;
+  }
+  .total-label { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1.5px; color: var(--muted); }
+  .total-val { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 2px; color: var(--orange); }
+
+  .tanda-block {
+    background: rgba(255,107,53,0.08); border: 1px solid rgba(255,107,53,0.2);
+    border-radius: 12px; padding: 14px; margin-top: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .tanda-label { font-size: 12px; color: var(--muted); }
+  .tanda-val { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 1.5px; color: var(--orange); }
+
+  /* FOOTER */
+  .footer { text-align: center; font-size: 11px; color: var(--muted); padding: 22px 0 4px; line-height: 1.8; }
+  .footer a { color: var(--orange); text-decoration: none; }
+
+  /* STICKY CTA */
+  .cta-wrap {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px 16px;
+    background: linear-gradient(to top, var(--bg) 70%, transparent); z-index: 998;
+  }
+  .cta-btn {
+    display: block; max-width: 480px; margin: 0 auto;
+    background: var(--orange); color: white; border: none; border-radius: 14px;
+    padding: 14px 20px; font-family: 'Outfit', sans-serif; font-size: 13px;
+    font-weight: 700; text-align: center; text-decoration: none; transition: background 0.2s;
+  }
+  .cta-btn:hover { background: #e5601f; }
+  .back-btn {
+    position: fixed; top: 16px; left: 16px;
+    background: #13131a; border: 1px solid #1e1e2a; border-radius: 100px;
+    color: #FF6B35; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 8px 16px; text-decoration: none; z-index: 999; transition: all 0.2s;
+  }
+  .back-btn:hover { border-color: #FF6B35; }
+</style>
+</head>
+<body>
+
+<a href="linktree-tunegociodigital.html" class="back-btn">← Volver</a>
+<div class="demo-badge">DEMO</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="card">
+    <div class="biz-header">
+      <div class="biz-avatar">🎂</div>
+      <div>
+        <div class="biz-name">DULCE ARTE</div>
+        <div class="biz-sub">Panadería &amp; Repostería Artesanal</div>
+      </div>
+    </div>
+    <div class="producto-row">
+      <span class="producto-label">PRODUCTO</span>
+      <input class="producto-input" type="text" value="Torta Selva Negra — 3 pisos" placeholder="Nombre del producto...">
+    </div>
+  </div>
+
+  <!-- INGREDIENTES -->
+  <div class="card">
+    <div class="sec-label">🧪 Ingredientes</div>
+    <div class="table-scroll">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Ingrediente</th>
+            <th style="width:44px; text-align:center;">Cant.</th>
+            <th style="width:90px;" class="r">Costo Unit.</th>
+            <th style="width:86px;" class="r">Total</th>
+          </tr>
+        </thead>
+        <tbody id="ingBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PARÁMETROS -->
+  <div class="card">
+    <div class="sec-label">⚙️ Parámetros de producción</div>
+    <div class="param-grid">
+      <div class="param-item">
+        <span class="param-label">Unidades por tanda</span>
+        <input class="param-input" type="number" id="pUnidades" value="12" min="1" oninput="calcular()">
+        <span class="param-unit">unidades</span>
+      </div>
+      <div class="param-item">
+        <span class="param-label">Tiempo de trabajo</span>
+        <input class="param-input" type="number" id="pHoras" value="3" min="0" step="0.5" oninput="calcular()">
+        <span class="param-unit">horas</span>
+      </div>
+      <div class="param-item" style="grid-column: 1 / -1;">
+        <span class="param-label">Costo mano de obra por hora</span>
+        <input class="param-input" type="number" id="pCostoHora" value="25000" min="0" oninput="calcular()">
+        <span class="param-unit">Gs. por hora</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GANANCIA -->
+  <div class="card">
+    <div class="sec-label">📈 Ganancia</div>
+    <div class="slider-wrap">
+      <span class="slider-label">% Ganancia</span>
+      <input type="range" id="slGanancia" min="0" max="150" value="40" oninput="calcular()">
+      <span class="slider-val" id="ganVal">40%</span>
+    </div>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="card">
+    <div class="sec-label">💰 Resumen de costos</div>
+    <div class="res-row">
+      <span class="res-label">Costo ingredientes</span>
+      <span class="res-val" id="rIngredientes">Gs. 0</span>
+    </div>
+    <div class="res-row">
+      <span class="res-label">Mano de obra (<span id="rHorasLabel">3</span>hs)</span>
+      <span class="res-val" id="rManoObra">Gs. 0</span>
+    </div>
+    <div class="res-row" style="border-bottom:none; padding-bottom:4px;">
+      <span class="res-label">Costo total tanda</span>
+      <span class="res-val" id="rCostoTotal">Gs. 0</span>
+    </div>
+    <hr class="divider-line">
+    <div class="res-row" style="padding-top:8px;">
+      <span class="res-label">Costo por unidad</span>
+      <span class="res-val" id="rCostoUnit">Gs. 0</span>
+    </div>
+    <div class="res-row" style="border-bottom:none;">
+      <span class="res-label">Ganancia (<span id="rGanPct">40</span>%)</span>
+      <span class="res-val res-highlight" id="rGanUnit">Gs. 0</span>
+    </div>
+    <div class="total-block">
+      <span class="total-label">PRECIO VENTA / UNIDAD</span>
+      <span class="total-val" id="rPrecioUnit">Gs. 0</span>
+    </div>
+    <div class="tanda-block">
+      <div>
+        <div class="tanda-label">Precio tanda completa (<span id="rUnidadesLabel">12</span> unidades)</div>
+      </div>
+      <div class="tanda-val" id="rPrecioTanda">Gs. 0</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Calculadora generada con<br>
+    <a href="https://instagram.com/tunegociodigitalpy" target="_blank">Tu Negocio Digital · @tunegociodigitalpy</a>
+  </div>
+
+</div>
+
+<div class="cta-wrap">
+  <a href="linktree-tunegociodigital.html#contacto" class="cta-btn">
+    🎂 Quiero mi calculadora de repostería → Pedir ahora
+  </a>
+</div>
+
+<script>
+  const INGREDIENTES = [
+    { nombre: 'Harina 500g',     cant: 1, costo: 8000 },
+    { nombre: 'Manteca 250g',    cant: 1, costo: 15000 },
+    { nombre: 'Huevos (x6)',     cant: 1, costo: 12000 },
+    { nombre: 'Azúcar 300g',     cant: 1, costo: 6000 },
+    { nombre: 'Cacao 100g',      cant: 1, costo: 18000 },
+    { nombre: 'Crema de leche',  cant: 1, costo: 22000 },
+    { nombre: 'Fondant 500g',    cant: 1, costo: 35000 },
+  ];
+
+  function fmt(n) {
+    return 'Gs. ' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function renderTabla() {
+    document.getElementById('ingBody').innerHTML = INGREDIENTES.map((ing, i) => `
+      <tr>
+        <td><span class="item-name">${ing.nombre}</span></td>
+        <td><input class="num-input" type="number" id="cant${i}" value="${ing.cant}" min="0" step="0.5" style="width:44px;text-align:center;" oninput="calcular()"></td>
+        <td><input class="num-input" type="number" id="costo${i}" value="${ing.costo}" min="0" oninput="calcular()"></td>
+        <td class="sub-cell" id="sub${i}">—</td>
+      </tr>`).join('');
+  }
+
+  function calcular() {
+    let costoIng = 0;
+    INGREDIENTES.forEach((_, i) => {
+      const cant  = parseFloat(document.getElementById('cant'  + i).value) || 0;
+      const costo = parseFloat(document.getElementById('costo' + i).value) || 0;
+      const sub   = cant * costo;
+      costoIng += sub;
+      document.getElementById('sub' + i).textContent = fmt(sub);
+    });
+
+    const horas     = parseFloat(document.getElementById('pHoras').value)     || 0;
+    const costoHora = parseFloat(document.getElementById('pCostoHora').value) || 0;
+    const unidades  = parseFloat(document.getElementById('pUnidades').value)  || 1;
+    const pct       = parseInt(document.getElementById('slGanancia').value);
+
+    const manoObra   = horas * costoHora;
+    const costoTotal = costoIng + manoObra;
+    const costoUnit  = costoTotal / unidades;
+    const ganUnit    = costoUnit * pct / 100;
+    const precioUnit = costoUnit + ganUnit;
+    const precioTanda = precioUnit * unidades;
+
+    document.getElementById('ganVal').textContent       = pct + '%';
+    document.getElementById('rGanPct').textContent      = pct;
+    document.getElementById('rHorasLabel').textContent  = horas;
+    document.getElementById('rUnidadesLabel').textContent = unidades;
+    document.getElementById('rIngredientes').textContent = fmt(costoIng);
+    document.getElementById('rManoObra').textContent    = fmt(manoObra);
+    document.getElementById('rCostoTotal').textContent  = fmt(costoTotal);
+    document.getElementById('rCostoUnit').textContent   = fmt(costoUnit);
+    document.getElementById('rGanUnit').textContent     = fmt(ganUnit);
+    document.getElementById('rPrecioUnit').textContent  = fmt(precioUnit);
+    document.getElementById('rPrecioTanda').textContent = fmt(precioTanda);
+  }
+
+  renderTabla();
+  calcular();
+</script>
+</body>
+</html>
