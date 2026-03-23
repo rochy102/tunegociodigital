@@ -1,0 +1,2020 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Presupuesto — Insumos de Impresión PRO</title>
+  <style>
+    /* ══════════════════════════════════════════════
+       VARIABLES & RESET
+    ══════════════════════════════════════════════ */
+    :root {
+      --rosa:       #1B5E20;
+      --rosa-claro: #E8F5E9;
+      --rosa-suave: #F1F8F2;
+      --dorado:     #2E7D32;
+      --dorado-cl:  #A5D6A7;
+      --dorado-bg:  #E8F5E9;
+      --blanco:     #ffffff;
+      --gris-10:    #f4f4f6;
+      --gris-30:    #d1d1d6;
+      --gris-60:    #8e8e93;
+      --gris-90:    #2c2c2e;
+      --sombra-s:   0 2px 8px rgba(0,0,0,.08);
+      --sombra-m:   0 6px 24px rgba(0,0,0,.12);
+      --sombra-xl:  0 16px 48px rgba(0,0,0,.16);
+      --radio:      14px;
+      --radio-lg:   22px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #E8F5E9 0%, #F1F8F2 50%, #E0F2E1 100%);
+      min-height: 100vh;
+      color: var(--gris-90);
+    }
+
+    /* ══════════════════════════════════════════════
+       HEADER APP
+    ══════════════════════════════════════════════ */
+    header {
+      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 60%, #388E3C 100%);
+      padding: 2.5rem 1.5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    header h1 {
+      font-size: clamp(1.5rem, 4vw, 2.4rem);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -.5px;
+      text-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    header p { margin-top: .4rem; color: rgba(255,255,255,.85); font-size: .95rem; }
+    .header-icon { font-size: 2.8rem; margin-bottom: .6rem; display: block; }
+    .pro-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #3a1f00;
+      font-size: .78rem;
+      font-weight: 900;
+      padding: .3rem .75rem;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(255,165,0,.4);
+      margin-left: .5rem;
+      vertical-align: middle;
+    }
+
+    /* ══════════════════════════════════════════════
+       LAYOUT
+    ══════════════════════════════════════════════ */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ══════════════════════════════════════════════
+       CARDS
+    ══════════════════════════════════════════════ */
+    .card {
+      background: var(--blanco);
+      border-radius: var(--radio-lg);
+      box-shadow: var(--sombra-m);
+      padding: 1.75rem 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(46,125,50,.15);
+    }
+    .card-perfil {
+      border: 2px solid transparent;
+      background: linear-gradient(white,white) padding-box,
+                  linear-gradient(135deg, var(--rosa), var(--dorado)) border-box;
+    }
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--gris-90);
+      margin-bottom: 1.25rem;
+      padding-bottom: .75rem;
+      border-bottom: 2px solid var(--rosa-claro);
+    }
+    .card-title .icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--rosa), var(--dorado));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .card-title .badge-guardado {
+      margin-left: auto;
+      font-size: .75rem;
+      font-weight: 600;
+      color: #2e7d32;
+      background: #e8f5e9;
+      border-radius: 20px;
+      padding: .2rem .65rem;
+      display: none;
+    }
+    .card-title .badge-guardado.visible { display: inline-block; }
+
+    /* ══════════════════════════════════════════════
+       PERFIL - LOGO UPLOAD
+    ══════════════════════════════════════════════ */
+    .logo-upload-area {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .logo-preview-wrap {
+      width: 100px; height: 100px;
+      border-radius: 16px;
+      border: 2.5px dashed var(--rosa-claro);
+      background: var(--rosa-suave);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+    .logo-preview-wrap:hover { border-color: var(--rosa); background: #fce4ee; }
+    .logo-preview-wrap img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+    }
+    .logo-placeholder {
+      text-align: center;
+      color: var(--rosa);
+    }
+    .logo-placeholder span { font-size: 2rem; display: block; }
+    .logo-placeholder p { font-size: .72rem; font-weight: 600; margin-top: .2rem; }
+    #logoInput { display: none; }
+    .logo-actions { display: flex; flex-direction: column; gap: .5rem; }
+    .btn-logo {
+      padding: .5rem 1rem;
+      border-radius: 10px;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--rosa);
+      color: var(--rosa);
+      background: #fff;
+      transition: all .2s;
+    }
+    .btn-logo:hover { background: var(--rosa); color: #fff; }
+    .btn-logo-remove {
+      border-color: var(--gris-30);
+      color: var(--gris-60);
+    }
+    .btn-logo-remove:hover { background: #fff0f0; border-color: #e55; color: #e55; }
+    .logo-hint {
+      font-size: .78rem;
+      color: var(--gris-60);
+      margin-top: .3rem;
+    }
+
+    /* ══════════════════════════════════════════════
+       FORM CONTROLS
+    ══════════════════════════════════════════════ */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; }
+    @media (max-width: 680px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+    @media (min-width: 681px) and (max-width: 860px) {
+      .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+    }
+
+    .field { display: flex; flex-direction: column; gap: .4rem; }
+    label {
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--gris-60);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    select {
+      height: 44px;
+      padding: 0 .9rem;
+      border: 1.5px solid var(--gris-30);
+      border-radius: var(--radio);
+      font-size: .95rem;
+      color: var(--gris-90);
+      background: var(--gris-10);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      width: 100%;
+    }
+    input:focus, select:focus {
+      border-color: var(--rosa);
+      box-shadow: 0 0 0 3px rgba(27,94,32,.15);
+      background: #fff;
+    }
+    select { cursor: pointer; }
+
+    /* Botón guardar perfil */
+    .btn-guardar-perfil {
+      width: 100%;
+      height: 48px;
+      margin-top: 1.25rem;
+      background: linear-gradient(135deg, var(--rosa), var(--dorado));
+      color: #fff;
+      border: none;
+      border-radius: var(--radio);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+    }
+    .btn-guardar-perfil:hover { transform: translateY(-2px); box-shadow: var(--sombra-m); }
+
+    /* ══════════════════════════════════════════════
+       ITEMS TABLE
+    ══════════════════════════════════════════════ */
+    .items-table { width: 100%; border-collapse: collapse; }
+    .items-table thead tr {
+      background: linear-gradient(90deg, var(--rosa-suave), var(--dorado-bg));
+    }
+    .items-table th {
+      padding: .7rem .75rem;
+      text-align: left;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--gris-60);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      border-bottom: 2px solid var(--rosa-claro);
+    }
+    .items-table th:last-child,
+    .items-table td:last-child { text-align: right; }
+    .items-table tbody tr {
+      border-bottom: 1px solid var(--gris-10);
+      transition: background .15s;
+    }
+    .items-table tbody tr:hover { background: var(--rosa-suave); }
+    .items-table td { padding: .65rem .75rem; vertical-align: middle; }
+    .item-name { font-size: .92rem; font-weight: 500; }
+    .item-unit { font-size: .78rem; color: var(--gris-60); }
+    .price-tag { font-size: .82rem; color: var(--dorado); font-weight: 600; }
+    .price-input {
+      width: 110px !important; height: 32px !important;
+      font-size: .82rem !important; font-weight: 600 !important;
+      color: var(--dorado) !important; text-align: right;
+      background: var(--dorado-bg); border: 1.5px dashed var(--dorado-cl) !important;
+      border-radius: 8px !important; padding: 0 .5rem !important;
+      cursor: text; transition: border-color .15s, box-shadow .15s;
+    }
+    .price-input:hover { border-color: var(--dorado) !important; }
+    .price-input:focus { border-color: var(--dorado) !important; border-style: solid !important;
+      box-shadow: 0 0 0 3px rgba(46,125,50,.18) !important; outline: none; }
+    .qty-input {
+      width: 75px !important; height: 38px !important;
+      text-align: center; padding: 0 .4rem !important;
+      border-radius: 10px !important;
+    }
+    .subtotal-cell { font-weight: 700; color: var(--rosa); font-size: .9rem; min-width: 100px; }
+
+    /* ══════════════════════════════════════════════
+       CUSTOM ITEMS
+    ══════════════════════════════════════════════ */
+    .custom-items { margin-top: 1rem; }
+    .custom-item-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: .5rem; align-items: center; margin-bottom: .5rem;
+    }
+    @media (max-width: 500px) {
+      .custom-item-row { grid-template-columns: 1fr 1fr; }
+      .custom-item-row .remove-btn { grid-column: span 2; justify-self: end; }
+    }
+    .btn-add-item {
+      margin-top: .75rem;
+      background: none;
+      border: 1.5px dashed var(--rosa);
+      color: var(--rosa);
+      border-radius: var(--radio);
+      padding: .55rem 1.2rem;
+      font-size: .88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .btn-add-item:hover { background: var(--rosa); color: #fff; }
+    .remove-btn {
+      background: none; border: none; color: #ccc;
+      cursor: pointer; font-size: 1.1rem; padding: .3rem;
+      border-radius: 8px; transition: color .2s, background .2s;
+    }
+    .remove-btn:hover { color: #e55; background: #fff0f0; }
+
+    /* ══════════════════════════════════════════════
+       EXTRAS GRID
+    ══════════════════════════════════════════════ */
+    .extras-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 500px) { .extras-grid { grid-template-columns: 1fr; } }
+
+    /* ══════════════════════════════════════════════
+       GANANCIA SLIDER
+    ══════════════════════════════════════════════ */
+    .ganancia-wrap {
+      background: linear-gradient(135deg, var(--rosa-suave), var(--dorado-bg));
+      border-radius: var(--radio); padding: 1rem 1.25rem; margin-top: .5rem;
+    }
+    .ganancia-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; }
+    .ganancia-label { font-weight: 600; font-size: .95rem; }
+    .ganancia-pct {
+      font-size: 1.5rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--rosa), var(--dorado));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    input[type="range"] { width: 100%; height: 6px; accent-color: var(--rosa); cursor: pointer; }
+    .ganancia-ticks { display: flex; justify-content: space-between; margin-top: .3rem; }
+    .ganancia-ticks span { font-size: .72rem; color: var(--gris-60); }
+
+    /* ══════════════════════════════════════════════
+       RESUMEN CARD
+    ══════════════════════════════════════════════ */
+    .resumen-card {
+      background: linear-gradient(135deg, #2c2c2e 0%, #1a1a1c 100%);
+      border-radius: var(--radio-lg); padding: 2rem 1.75rem;
+      box-shadow: var(--sombra-xl); color: #fff; margin-bottom: 1.5rem;
+    }
+    .resumen-title {
+      text-align: center; font-size: 1rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--dorado-cl); margin-bottom: 1.5rem;
+    }
+    .resumen-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .65rem 0; border-bottom: 1px solid rgba(255,255,255,.08); font-size: .92rem;
+    }
+    .resumen-row:last-child { border-bottom: none; }
+    .resumen-row .lbl { color: rgba(255,255,255,.65); }
+    .resumen-row .val { font-weight: 600; }
+    .resumen-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+      margin: 1rem 0;
+    }
+    .precio-costo {
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(255,255,255,.07); border-radius: var(--radio);
+      padding: 1rem 1.25rem; margin-bottom: .75rem;
+    }
+    .precio-costo .lbl { font-size: .85rem; color: rgba(255,255,255,.6); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+    .precio-costo .val { font-size: 1.4rem; font-weight: 800; color: #fff; }
+    .precio-venta {
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(135deg, rgba(27,94,32,.35), rgba(46,125,50,.35));
+      border: 1px solid rgba(46,125,50,.4); border-radius: var(--radio); padding: 1.1rem 1.25rem;
+    }
+    .precio-venta .lbl { font-size: .85rem; color: var(--dorado-cl); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+    .precio-venta .val { font-size: 1.8rem; font-weight: 900; color: var(--dorado-cl); }
+
+    /* ══════════════════════════════════════════════
+       BOTONES
+    ══════════════════════════════════════════════ */
+    .btn-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      flex: 1; min-width: 180px; height: 52px; border: none;
+      border-radius: var(--radio); font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: transform .15s, box-shadow .15s;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: var(--sombra-m); }
+    .btn:active { transform: translateY(0); }
+    .btn-wsp  { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; }
+    .btn-calcular { background: linear-gradient(135deg, var(--rosa), #1B5E20); color: #fff; }
+    .btn-limpiar { background: var(--gris-10); color: var(--gris-60); border: 1.5px solid var(--gris-30); }
+    .btn-limpiar:hover { background: #ffe8ef; color: var(--rosa); border-color: var(--rosa); }
+    .btn-pdf { background: linear-gradient(135deg, var(--dorado), #2E7D32); color: #fff; }
+
+    /* ══════════════════════════════════════════════
+       BADGES EVENTO
+    ══════════════════════════════════════════════ */
+    .event-badges { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+    .event-badge {
+      padding: .4rem .9rem; border-radius: 20px; font-size: .82rem; font-weight: 600;
+      cursor: pointer; border: 1.5px solid var(--gris-30);
+      background: var(--gris-10); color: var(--gris-60);
+      transition: all .2s; user-select: none;
+    }
+    .event-badge.active {
+      background: linear-gradient(135deg, var(--rosa), var(--dorado));
+      border-color: transparent; color: #fff;
+    }
+
+    /* ══════════════════════════════════════════════
+       EMPTY NOTE
+    ══════════════════════════════════════════════ */
+    .empty-note { text-align: center; padding: 1.5rem; color: var(--gris-60); font-size: .88rem; }
+
+    /* ══════════════════════════════════════════════
+       FOOTER APP
+    ══════════════════════════════════════════════ */
+    footer { text-align: center; padding: 1.5rem 1rem; color: var(--gris-60); font-size: .8rem; }
+
+    /* ══════════════════════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card, .resumen-card { animation: fadeUp .4s ease both; }
+
+    /* ══════════════════════════════════════════════
+       SCROLLBAR
+    ══════════════════════════════════════════════ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--rosa-claro); border-radius: 3px; }
+
+    /* ══════════════════════════════════════════════
+       CONDICIONES EDITABLES
+    ══════════════════════════════════════════════ */
+    .condiciones-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 680px) { .condiciones-grid { grid-template-columns: 1fr; } }
+    .cond-item {
+      border: 1.5px solid var(--gris-30);
+      border-radius: var(--radio);
+      padding: .9rem 1rem;
+      background: var(--gris-10);
+      transition: border-color .2s, background .2s, box-shadow .2s;
+    }
+    .cond-item:focus-within {
+      border-color: var(--rosa);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(27,94,32,.15);
+    }
+    .cond-label {
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--dorado);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .45rem;
+    }
+    .cond-text {
+      font-size: .9rem;
+      color: var(--gris-90);
+      line-height: 1.55;
+      outline: none;
+      cursor: text;
+      min-height: 2.5rem;
+      white-space: pre-wrap;
+    }
+    .cond-hint {
+      font-size: .75rem;
+      color: var(--gris-60);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    /* ══════════════════════════════════════════════
+       TOAST NOTIFICACIÓN
+    ══════════════════════════════════════════════ */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #2c2c2e; color: #fff;
+      padding: .75rem 1.5rem; border-radius: 50px;
+      font-size: .9rem; font-weight: 600;
+      box-shadow: var(--sombra-xl);
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .35s;
+      opacity: 0; z-index: 9999; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ══════════════════════════════════════════════
+       PRO — GOOGLE SHEETS CONFIG
+    ══════════════════════════════════════════════ */
+    .sheets-section {
+      margin-top: 1.5rem;
+      border-top: 2px solid var(--rosa-claro);
+      padding-top: 1.25rem;
+    }
+    .sheets-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .sheets-header-left { display: flex; align-items: center; gap: .6rem; }
+    .sheets-header-left .sheets-icon { font-size: 1.4rem; }
+    .sheets-header-left .sheets-title { font-size: .95rem; font-weight: 700; }
+    .sheets-header-left .sheets-subtitle { font-size: .78rem; color: var(--gris-60); }
+    /* Toggle */
+    .toggle-wrap { display: flex; align-items: center; gap: .5rem; cursor: pointer; }
+    .toggle-label { font-size: .82rem; font-weight: 600; color: var(--gris-60); }
+    .toggle {
+      position: relative; width: 44px; height: 24px;
+      background: var(--gris-30); border-radius: 12px;
+      transition: background .2s; flex-shrink: 0; cursor: pointer;
+    }
+    .toggle::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; background: #fff;
+      border-radius: 50%; transition: transform .2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .toggle.on { background: var(--rosa); }
+    .toggle.on::after { transform: translateX(20px); }
+    /* Sheets fields */
+    .sheets-fields { display: none; margin-top: 1rem; }
+    .sheets-fields.visible { display: block; }
+    .sheets-url-row {
+      display: grid; grid-template-columns: 1fr auto; gap: .75rem; align-items: end;
+      margin-bottom: .75rem;
+    }
+    @media (max-width: 600px) { .sheets-url-row { grid-template-columns: 1fr; } }
+    .btn-verificar {
+      height: 44px; padding: 0 1.2rem;
+      background: linear-gradient(135deg, var(--dorado), #1a5c1e);
+      color: #fff; border: none; border-radius: var(--radio);
+      font-size: .88rem; font-weight: 700; cursor: pointer;
+      white-space: nowrap; transition: transform .15s, box-shadow .15s;
+    }
+    .btn-verificar:hover { transform: translateY(-1px); box-shadow: var(--sombra-s); }
+    .btn-verificar:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .sheets-status { font-size: .82rem; font-weight: 600; margin-top: .3rem; }
+    .sheets-save-status {
+      font-size: .88rem; font-weight: 600; margin-top: .75rem;
+      min-height: 1.2em;
+    }
+
+    /* ══════════════════════════════════════════════
+       PRO — MIS INGRESOS
+    ══════════════════════════════════════════════ */
+    .ingresos-card {
+      background: linear-gradient(135deg, #1a2744 0%, #0d1b3e 100%);
+      border-radius: var(--radio-lg); padding: 2rem 1.75rem;
+      box-shadow: var(--sombra-xl); color: #fff; margin-bottom: 1.5rem;
+    }
+    .ingresos-card .card-title {
+      color: #A5D6A7;
+      border-bottom-color: rgba(255,255,255,.1);
+    }
+    .stat-box {
+      background: rgba(255,255,255,.07); border-radius: var(--radio);
+      padding: 1rem 1.25rem; text-align: center;
+    }
+    .stat-box .stat-lbl { font-size: .72rem; color: rgba(255,255,255,.55); text-transform: uppercase; letter-spacing: .06em; font-weight: 700; margin-bottom: .4rem; }
+    .stat-box .stat-val { font-size: 1.4rem; font-weight: 900; color: #fff; }
+    .historial-item {
+      background: rgba(255,255,255,.05); border-radius: 10px;
+      padding: .65rem .9rem; border: 1px solid rgba(255,255,255,.08);
+      transition: background .15s; margin-bottom: .5rem;
+    }
+    .historial-item:hover { background: rgba(255,255,255,.09); }
+    .ingresos-wsp-btn {
+      flex: 1; min-width: 180px; height: 48px;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: #fff; border: none; border-radius: var(--radio);
+      font-size: .95rem; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .ingresos-wsp-btn:hover { transform: translateY(-2px); box-shadow: var(--sombra-m); }
+    .ingresos-clear-btn {
+      flex: 1; min-width: 180px; height: 48px;
+      background: none; border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.5); border-radius: var(--radio);
+      font-size: .88rem; font-weight: 600; cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .ingresos-clear-btn:hover { border-color: rgba(255,100,100,.5); color: #EF9A9A; }
+
+    /* ══════════════════════════════════════════════
+       ██████  PRINT / PDF  ██████
+    ══════════════════════════════════════════════ */
+
+    /* La vista de impresión está oculta en pantalla */
+    #printView { display: none; }
+
+    @media print {
+      /* Ocultar toda la UI de la app */
+      header, footer, .card, .resumen-card, .btn-row, .toast, .ingresos-card { display: none !important; }
+      body { background: white !important; font-family: 'Segoe UI', Arial, sans-serif; }
+      .container { padding: 0; max-width: 100%; }
+
+      /* Mostrar vista de impresión */
+      #printView {
+        display: block !important;
+        padding: 0;
+        color: #1a1a1a;
+      }
+
+      /* ─── Encabezado PDF ─── */
+      .pv-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        padding: 1.2rem 1.5rem;
+        background: linear-gradient(135deg, #1B5E20, #2E7D32) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        border-radius: 0;
+        color: white;
+      }
+      .pv-logo-box {
+        width: 90px; height: 90px;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .pv-logo-box img { width: 100%; height: 100%; object-fit: contain; }
+      .pv-logo-placeholder {
+        font-size: 2.2rem;
+        text-align: center;
+        line-height: 90px;
+      }
+      .pv-biz-main { flex: 1; }
+      .pv-biz-name {
+        font-size: 1.5rem; font-weight: 800;
+        letter-spacing: -.3px;
+        margin-bottom: .2rem;
+      }
+      .pv-decoradora-name {
+        font-size: .9rem; opacity: .85; margin-bottom: .3rem;
+      }
+      .pv-slogan {
+        font-size: .8rem; font-style: italic; opacity: .75; margin-bottom: .5rem;
+      }
+      .pv-contacts {
+        display: flex; flex-wrap: wrap; gap: .4rem 1rem;
+        font-size: .78rem; opacity: .9;
+      }
+      .pv-contacts span::before { margin-right: .25rem; }
+      .pv-cot-box {
+        text-align: right; flex-shrink: 0;
+        display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: .3rem;
+      }
+      .pv-cot-num {
+        font-size: 1.1rem; font-weight: 800;
+        background: rgba(255,255,255,.2);
+        padding: .35rem .8rem; border-radius: 8px;
+        letter-spacing: .05em;
+      }
+      .pv-cot-date { font-size: .78rem; opacity: .8; }
+      .pv-cot-validity { font-size: .72rem; opacity: .65; }
+
+      /* ─── Separador dorado ─── */
+      .pv-gold-line {
+        height: 4px;
+        background: linear-gradient(90deg, #2E7D32, #A5D6A7, #2E7D32) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ─── Sección cliente ─── */
+      .pv-client-section {
+        padding: 1rem 1.5rem .8rem;
+        border-bottom: 1px solid #eee;
+      }
+      .pv-section-label {
+        font-size: .7rem; font-weight: 800; letter-spacing: .1em;
+        text-transform: uppercase; color: #1B5E20;
+        margin-bottom: .6rem;
+      }
+      .pv-client-grid {
+        display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: .4rem 1rem;
+        font-size: .82rem;
+      }
+      .pv-client-item .pv-ci-label { font-size: .7rem; color: #888; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+      .pv-client-item .pv-ci-val { font-weight: 700; color: #1a1a1a; font-size: .88rem; }
+
+      /* ─── Tabla de items ─── */
+      .pv-items-section { padding: .8rem 1.5rem; }
+      .pv-table {
+        width: 100%; border-collapse: collapse; font-size: .82rem; margin-top: .5rem;
+      }
+      .pv-table thead tr {
+        background: #F1F8F2 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .pv-table th {
+        padding: .55rem .7rem;
+        text-align: left; font-size: .7rem;
+        font-weight: 800; color: #1B5E20;
+        text-transform: uppercase; letter-spacing: .05em;
+        border-bottom: 2px solid #E8F5E9;
+      }
+      .pv-table th:nth-child(3), .pv-table td:nth-child(3) { text-align: center; }
+      .pv-table th:last-child, .pv-table td:last-child { text-align: right; }
+      .pv-table tbody tr { border-bottom: 1px solid #f0f0f0; }
+      .pv-table tbody tr:nth-child(even) {
+        background: #F5FBF5 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .pv-table td { padding: .5rem .7rem; color: #2c2c2e; }
+      .pv-table .td-nombre { font-weight: 600; }
+      .pv-table .td-precio { color: #2E7D32; font-weight: 600; }
+      .pv-table .td-sub { font-weight: 700; color: #1B5E20; }
+
+      /* ─── Totales ─── */
+      .pv-totals-section {
+        padding: .5rem 1.5rem 1rem;
+        display: flex; justify-content: flex-end;
+      }
+      .pv-totals-box {
+        width: 340px; border: 1px solid #eee; border-radius: 10px; overflow: hidden;
+      }
+      .pv-tot-row {
+        display: flex; justify-content: space-between;
+        padding: .45rem .9rem; font-size: .82rem;
+        border-bottom: 1px solid #f5f5f5;
+      }
+      .pv-tot-row .tl { color: #666; }
+      .pv-tot-row .tv { font-weight: 600; color: #2c2c2e; }
+      .pv-tot-costo {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: .6rem .9rem;
+        background: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        font-size: .85rem;
+      }
+      .pv-tot-costo .tl { color: #555; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+      .pv-tot-costo .tv { font-weight: 800; color: #1a1a1a; font-size: .95rem; }
+      .pv-tot-venta {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: .8rem .9rem;
+        background: linear-gradient(135deg, #1B5E20, #2E7D32) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color: white;
+      }
+      .pv-tot-venta .tl { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; opacity: .9; }
+      .pv-tot-venta .tv { font-size: 1.2rem; font-weight: 900; }
+
+      /* ─── Notas / condiciones ─── */
+      .pv-notes {
+        padding: .75rem 1.5rem;
+        background: #F1F8F2 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        border-top: 1px solid #eee;
+        font-size: .72rem; color: #888;
+        display: flex; gap: 2rem;
+      }
+      .pv-notes-col { flex: 1; }
+      .pv-notes strong { display: block; color: #2E7D32; margin-bottom: .2rem; text-transform: uppercase; letter-spacing: .04em; }
+
+      /* ─── Footer PDF ─── */
+      .pv-footer {
+        padding: .6rem 1.5rem;
+        background: #2c2c2e !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color: rgba(255,255,255,.8);
+        font-size: .72rem;
+        display: flex; justify-content: space-between; align-items: center;
+        flex-wrap: wrap; gap: .3rem;
+      }
+      .pv-footer-biz { font-weight: 700; color: #A5D6A7; }
+      .pv-footer-contacts { display: flex; gap: 1rem; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     VISTA DE IMPRESIÓN PDF (oculta en pantalla)
+══════════════════════════════════════════ -->
+<div id="printView">
+
+  <!-- Encabezado con branding -->
+  <div class="pv-header">
+    <div class="pv-logo-box">
+      <img id="pvLogoImg" src="" alt="" style="display:none" />
+      <div class="pv-logo-placeholder" id="pvLogoPlaceholder">🖨️</div>
+    </div>
+    <div class="pv-biz-main">
+      <div class="pv-biz-name" id="pvBizName">Insumos de Impresión</div>
+      <div class="pv-decoradora-name" id="pvDecName"></div>
+      <div class="pv-slogan" id="pvSlogan"></div>
+      <div class="pv-contacts" id="pvContacts"></div>
+    </div>
+    <div class="pv-cot-box">
+      <div class="pv-cot-num" id="pvCotNum">INS-001</div>
+      <div class="pv-cot-date" id="pvCotDate"></div>
+      <div class="pv-cot-validity">Válido por 7 días</div>
+    </div>
+  </div>
+  <div class="pv-gold-line"></div>
+
+  <!-- Datos del cliente -->
+  <div class="pv-client-section">
+    <div class="pv-section-label">Datos del pedido</div>
+    <div class="pv-client-grid">
+      <div class="pv-client-item">
+        <div class="pv-ci-label">Cliente / Empresa</div>
+        <div class="pv-ci-val" id="pvEvento">—</div>
+      </div>
+      <div class="pv-client-item">
+        <div class="pv-ci-label">Tipo de cliente</div>
+        <div class="pv-ci-val" id="pvTipoEvento">—</div>
+      </div>
+      <div class="pv-client-item">
+        <div class="pv-ci-label">Fecha de entrega</div>
+        <div class="pv-ci-val" id="pvFecha">—</div>
+      </div>
+      <div class="pv-client-item">
+        <div class="pv-ci-label">Teléfono / contacto</div>
+        <div class="pv-ci-val" id="pvInvitados">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de items -->
+  <div class="pv-items-section">
+    <div class="pv-section-label">Detalle del pedido</div>
+    <table class="pv-table">
+      <thead>
+        <tr>
+          <th style="width:42%">Ítem</th>
+          <th>Precio unit.</th>
+          <th>Cant.</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody id="pvTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Totales -->
+  <div class="pv-totals-section">
+    <div class="pv-totals-box">
+      <div class="pv-tot-row" id="pvRowManoObra" style="display:none">
+        <span class="tl">📦 Insumos extra</span>
+        <span class="tv" id="pvManoObra"></span>
+      </div>
+      <div class="pv-tot-row" id="pvRowTraslado" style="display:none">
+        <span class="tl">🚐 Traslado / envío</span>
+        <span class="tv" id="pvTraslado"></span>
+      </div>
+      <div class="pv-tot-row" id="pvRowOtros" style="display:none">
+        <span class="tl" id="pvOtrosLabel">Otros gastos</span>
+        <span class="tv" id="pvOtros"></span>
+      </div>
+      <div class="pv-tot-venta">
+        <span class="tl">⭐ Total cotizado</span>
+        <span class="tv" id="pvVenta"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notas / condiciones -->
+  <div class="pv-notes">
+    <div class="pv-notes-col">
+      <strong>📋 Condiciones</strong>
+      <span id="pvCondiciones"></span>
+    </div>
+    <div class="pv-notes-col">
+      <strong>💳 Forma de pago</strong>
+      <span id="pvFormaPago"></span>
+    </div>
+    <div class="pv-notes-col">
+      <strong>✅ Incluye</strong>
+      <span id="pvIncluye"></span>
+    </div>
+  </div>
+
+  <!-- Footer PDF -->
+  <div class="pv-footer">
+    <span class="pv-footer-biz" id="pvFooterBiz">Insumos de Impresión</span>
+    <div class="pv-footer-contacts" id="pvFooterContacts"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     HEADER DE LA APP
+══════════════════════════════════════════ -->
+<header>
+  <span class="header-icon">🖨️</span>
+  <h1>Calculadora de Presupuesto <span class="pro-badge">★ PRO</span></h1>
+  <p>Insumos de Impresión · Paraguay</p>
+</header>
+
+<div class="container">
+
+  <!-- ══ PERFIL DE LA DECORADORA ══ -->
+  <div class="card card-perfil" style="animation-delay:.02s">
+    <div class="card-title">
+      <div class="icon">👑</div>
+      Mi Perfil &amp; Negocio
+      <span class="badge-guardado" id="badgeGuardado">✓ Guardado</span>
+    </div>
+
+    <!-- Logo upload -->
+    <div class="logo-upload-area">
+      <div class="logo-preview-wrap" id="logoPreviewWrap" onclick="document.getElementById('logoInput').click()" title="Clic para subir logo">
+        <img id="logoPreview" src="" alt="" style="display:none" />
+        <div class="logo-placeholder" id="logoPlaceholder">
+          <span>🖨️</span>
+          <p>Subir logo</p>
+        </div>
+      </div>
+      <input type="file" id="logoInput" accept="image/*" onchange="handleLogoUpload(this)" />
+      <div class="logo-actions">
+        <button class="btn-logo" onclick="document.getElementById('logoInput').click()">📷 Elegir logo</button>
+        <button class="btn-logo btn-logo-remove" onclick="quitarLogo()">🗑️ Quitar logo</button>
+        <p class="logo-hint">PNG, JPG · Recomendado: fondo transparente o blanco</p>
+      </div>
+    </div>
+
+    <!-- Datos del negocio -->
+    <div class="grid-2" style="margin-bottom:1rem">
+      <div class="field">
+        <label>Nombre del negocio / empresa</label>
+        <input type="text" id="pNegocio" placeholder="Ej: PrintShop Asunción" />
+      </div>
+      <div class="field">
+        <label>Tu nombre (responsable)</label>
+        <input type="text" id="pNombre" placeholder="Ej: Sofía González" />
+      </div>
+    </div>
+    <div class="grid-2" style="margin-bottom:1rem">
+      <div class="field">
+        <label>Teléfono / WhatsApp</label>
+        <input type="tel" id="pTel" placeholder="Ej: +595 981 123 456" />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="pEmail" placeholder="Ej: sofia@gmail.com" />
+      </div>
+    </div>
+    <div class="grid-2" style="margin-bottom:1rem">
+      <div class="field">
+        <label>Instagram</label>
+        <input type="text" id="pInstagram" placeholder="@mi_negocio" />
+      </div>
+      <div class="field">
+        <label>Facebook</label>
+        <input type="text" id="pFacebook" placeholder="PrintShop Asunción" />
+      </div>
+    </div>
+    <div class="grid-2" style="margin-bottom:1rem">
+      <div class="field">
+        <label>Dirección</label>
+        <input type="text" id="pDireccion" placeholder="Ej: Mariscal López 1234" />
+      </div>
+      <div class="field">
+        <label>Ciudad</label>
+        <input type="text" id="pCiudad" placeholder="Ej: Asunción, Luque, San Lorenzo..." />
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:1rem">
+      <label>Slogan o frase de tu negocio (opcional)</label>
+      <input type="text" id="pSlogan" placeholder="Ej: &quot;Convertimos tus sueños en momentos mágicos&quot;" />
+    </div>
+
+    <button class="btn-guardar-perfil" onclick="guardarPerfil()">
+      💾 Guardar mi perfil
+    </button>
+
+    <!-- Google Sheets PRO -->
+    <div class="sheets-section">
+      <div class="sheets-header">
+        <div class="sheets-header-left">
+          <span class="sheets-icon">📊</span>
+          <div>
+            <div class="sheets-title">Google Sheets</div>
+            <div class="sheets-subtitle">Registrar cotizaciones automáticamente</div>
+          </div>
+        </div>
+        <div class="toggle-wrap" onclick="toggleSheets()">
+          <span class="toggle-label" id="toggleLabel">Desactivado</span>
+          <div class="toggle" id="sheetsToggle"></div>
+        </div>
+      </div>
+      <div class="sheets-fields" id="sheetsFields">
+        <div class="sheets-url-row">
+          <div class="field">
+            <label>URL del Apps Script</label>
+            <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/..." />
+          </div>
+          <button class="btn-verificar" onclick="verificarConexion()">🔌 Verificar</button>
+        </div>
+        <div class="sheets-status" id="sheetsStatus"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DATOS DEL EVENTO ══ -->
+  <div class="card" style="animation-delay:.05s">
+    <div class="card-title">
+      <div class="icon">📋</div>
+      Datos del Pedido
+    </div>
+
+    <div class="event-badges" id="eventBadges">
+      <div class="event-badge active" data-type="Empresa">🏢 Empresa</div>
+      <div class="event-badge" data-type="Oficina">💼 Oficina</div>
+      <div class="event-badge" data-type="Comercio">🏪 Comercio</div>
+      <div class="event-badge" data-type="Institución">🏫 Institución</div>
+      <div class="event-badge" data-type="Particular">👤 Particular</div>
+      <div class="event-badge" data-type="Mayorista">📦 Mayorista</div>
+      <div class="event-badge" data-type="Otro">⭐ Otro</div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:1rem">
+      <div class="field">
+        <label>Nombre del cliente / empresa</label>
+        <input type="text" id="nombreEvento" placeholder="Ej: Oficina Central - Pedido mensual" />
+      </div>
+      <div class="field">
+        <label>Fecha de entrega</label>
+        <input type="date" id="fechaEvento" />
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="field">
+        <label>Nro. de impresoras del cliente</label>
+        <input type="number" id="cantMesas" placeholder="0" min="0" oninput="calcular()" />
+      </div>
+      <div class="field">
+        <label>Nro. de equipos (copiadoras)</label>
+        <input type="number" id="cantSillas" placeholder="0" min="0" oninput="calcular()" />
+      </div>
+      <div class="field">
+        <label>Teléfono / contacto</label>
+        <input type="text" id="cantInvitados" placeholder="Ej: 0981 123 456" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ITEMS DE DECORACIÓN ══ -->
+  <div class="card" style="animation-delay:.1s">
+    <div class="card-title">
+      <div class="icon">🖨️</div>
+      Insumos de Impresión
+    </div>
+    <div style="overflow-x:auto">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Precio unit.</th>
+            <th style="text-align:center">Cantidad</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+    </div>
+    <div class="custom-items">
+      <div style="font-size:.85rem;font-weight:700;color:var(--gris-60);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.04em">
+        ➕ Items personalizados
+      </div>
+      <div id="customItems"></div>
+      <button class="btn-add-item" onclick="agregarItemPersonalizado()">+ Agregar item personalizado</button>
+    </div>
+  </div>
+
+  <!-- ══ ALQUILER MOBILIARIO ══ -->
+  <div class="card" style="animation-delay:.15s">
+    <div class="card-title">
+      <div class="icon">📦</div>
+      Envío &amp; Recargos
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Cantidad para recargo bulk (uds.)</label>
+        <input type="number" id="precioMesa" value="0" min="0" oninput="calcular()" />
+      </div>
+      <div class="field">
+        <label>Precio recargo por unidad (₲)</label>
+        <input type="number" id="precioSilla" value="0" min="0" oninput="calcular()" />
+      </div>
+    </div>
+    <div style="margin-top:.75rem;font-size:.85rem;color:var(--gris-60)">
+      💡 Usá estos campos para recargos de embalaje especial o cantidad mínima. Dejá en 0 si no aplica.
+    </div>
+  </div>
+
+  <!-- ══ MANO DE OBRA & EXTRAS ══ -->
+  <div class="card" style="animation-delay:.2s">
+    <div class="card-title">
+      <div class="icon">🚐</div>
+      Gastos Adicionales
+    </div>
+    <div class="extras-grid">
+      <div class="field">
+        <label>Insumos extra / preparación (₲)</label>
+        <input type="number" id="manoObra" placeholder="0" min="0" oninput="calcular()" />
+      </div>
+      <div class="field">
+        <label>Delivery / envío (₲)</label>
+        <input type="number" id="traslado" placeholder="0" min="0" oninput="calcular()" />
+      </div>
+      <div class="field">
+        <label>Otros gastos (₲)</label>
+        <input type="number" id="otrosGastos" placeholder="0" min="0" oninput="calcular()" />
+      </div>
+      <div class="field">
+        <label>Descripción otros gastos</label>
+        <input type="text" id="otrosDesc" placeholder="Ej: impresión, alquiler local..." />
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ GANANCIA ══ -->
+  <div class="card" style="animation-delay:.25s">
+    <div class="card-title">
+      <div class="icon">💰</div>
+      Porcentaje de Ganancia
+    </div>
+    <div class="ganancia-wrap">
+      <div class="ganancia-header">
+        <span class="ganancia-label">Margen de ganancia</span>
+        <span class="ganancia-pct" id="gananciaLabel">30%</span>
+      </div>
+      <input type="range" id="gananciaSlider" min="5" max="100" value="30" step="5"
+             oninput="document.getElementById('gananciaLabel').textContent=this.value+'%'; calcular()" />
+      <div class="ganancia-ticks">
+        <span>5%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+      </div>
+    </div>
+    <div style="margin-top:.75rem;font-size:.83rem;color:var(--gris-60)">
+      💡 Para distribuidores mayoristas se recomienda 30–50%. Para ventas minoristas, 20–35%.
+    </div>
+  </div>
+
+  <!-- ══ BOTÓN CALCULAR ══ -->
+  <div class="btn-row" style="margin-bottom:1.5rem">
+    <button class="btn btn-calcular" onclick="calcular()">🧮 Calcular presupuesto</button>
+    <button class="btn btn-limpiar" onclick="limpiarForm()">🗑️ Limpiar evento</button>
+  </div>
+
+  <!-- ══ RESUMEN ══ -->
+  <div class="resumen-card" id="resumenCard" style="animation-delay:.3s">
+    <div class="resumen-title">🖨️ Resumen del Presupuesto 🖨️</div>
+    <div id="resumenDetalle">
+      <div class="empty-note" style="color:rgba(255,255,255,.4)">
+        Completá los campos y presioná "Calcular" para ver tu presupuesto.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONDICIONES DEL PRESUPUESTO ══ -->
+  <div class="card" style="animation-delay:.28s">
+    <div class="card-title">
+      <div class="icon">📋</div>
+      Condiciones del Presupuesto
+    </div>
+    <p class="cond-hint">✏️ Hacé clic en cualquier texto para editarlo. Los cambios se guardan automáticamente.</p>
+    <div class="condiciones-grid">
+      <div class="cond-item">
+        <div class="cond-label">📋 Condiciones</div>
+        <div class="cond-text" id="editCondiciones" contenteditable="true"></div>
+      </div>
+      <div class="cond-item">
+        <div class="cond-label">💳 Forma de pago</div>
+        <div class="cond-text" id="editFormaPago" contenteditable="true"></div>
+      </div>
+      <div class="cond-item">
+        <div class="cond-label">✅ Incluye</div>
+        <div class="cond-text" id="editIncluye" contenteditable="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BOTONES FINALES ══ -->
+  <div class="btn-row">
+    <button class="btn btn-wsp" onclick="compartirWhatsApp()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Compartir por WhatsApp
+    </button>
+    <button class="btn btn-pdf" onclick="generarPDF()">
+      🖨️ Cotización PDF
+    </button>
+  </div>
+  <div class="sheets-save-status" id="sheetsSaveStatus"></div>
+
+  <!-- MIS INGRESOS -->
+  <div class="card ingresos-card">
+    <div class="card-title"><span class="icon">📊</span> Mis Ingresos</div>
+    <div id="ingresosStats"></div>
+    <div id="ingresosHistorial"></div>
+    <div style="display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap;">
+      <button class="ingresos-wsp-btn" onclick="exportarResumenWsp()">📲 Exportar resumen por WhatsApp</button>
+      <button class="ingresos-clear-btn" onclick="limpiarHistorial()">🗑️ Limpiar historial</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Hecho con 💚 para distribuidores de insumos de Paraguay &middot; 2025
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────────
+   CATÁLOGO DE ITEMS
+───────────────────────────────────────────── */
+const ITEMS = [
+  { id:'toner_hp_negro',   nombre:'Toner HP negro (original)',  unidad:'por cartucho', precio:320000 },
+  { id:'toner_hp_color',   nombre:'Toner HP color (original)',  unidad:'por cartucho', precio:450000 },
+  { id:'tinta_epson_neg',  nombre:'Tinta Epson negro',          unidad:'por botella',  precio:85000  },
+  { id:'tinta_epson_col',  nombre:'Tinta Epson color',          unidad:'por botella',  precio:95000  },
+  { id:'tinta_brother',    nombre:'Tinta Brother',              unidad:'por cartucho', precio:110000 },
+  { id:'toner_samsung',    nombre:'Toner Samsung',              unidad:'por cartucho', precio:290000 },
+  { id:'toner_xerox',      nombre:'Toner Xerox',                unidad:'por cartucho', precio:380000 },
+  { id:'cinta_matricial',  nombre:'Cinta matricial',            unidad:'por unidad',   precio:45000  },
+  { id:'kit_mant',         nombre:'Kit de mantenimiento',       unidad:'por kit',      precio:250000 },
+  { id:'drum_tambor',      nombre:'Drum / tambor',              unidad:'por unidad',   precio:480000 },
+  { id:'recarga_toner',    nombre:'Recarga de toner',           unidad:'por recarga',  precio:120000 },
+  { id:'recarga_cartucho', nombre:'Recarga de cartucho',        unidad:'por recarga',  precio:55000  },
+  { id:'serv_tecnico',     nombre:'Servicio técnico',           unidad:'por servicio', precio:150000 },
+  { id:'delivery',         nombre:'Delivery / envío',           unidad:'por entrega',  precio:25000  },
+];
+
+/* ─────────────────────────────────────────────
+   ESTADO GLOBAL
+───────────────────────────────────────────── */
+let tipoEvento = 'Cumpleaños';
+let customItemCount = 0;
+let logoBase64 = '';
+let preciosCustom = {};
+
+/* ─────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  cargarPrecios();
+  renderItems();
+  setupBadges();
+  document.getElementById('fechaEvento').value = new Date().toISOString().split('T')[0];
+  cargarPerfil();
+  cargarCondiciones();
+  cargarProConfig();
+});
+
+/* ─────────────────────────────────────────────
+   PERFIL — GUARDAR / CARGAR
+───────────────────────────────────────────── */
+function guardarPerfil() {
+  const perfil = {
+    negocio:   document.getElementById('pNegocio').value.trim(),
+    nombre:    document.getElementById('pNombre').value.trim(),
+    tel:       document.getElementById('pTel').value.trim(),
+    email:     document.getElementById('pEmail').value.trim(),
+    instagram: document.getElementById('pInstagram').value.trim(),
+    facebook:  document.getElementById('pFacebook').value.trim(),
+    direccion: document.getElementById('pDireccion').value.trim(),
+    ciudad:    document.getElementById('pCiudad').value.trim(),
+    slogan:    document.getElementById('pSlogan').value.trim(),
+    logo:      logoBase64,
+  };
+  localStorage.setItem('insumosPerfil', JSON.stringify(perfil));
+  document.getElementById('badgeGuardado').classList.add('visible');
+  showToast('✅ Perfil guardado exitosamente');
+}
+
+function cargarPerfil() {
+  const raw = localStorage.getItem('insumosPerfil');
+  if (!raw) return;
+  try {
+    const p = JSON.parse(raw);
+    document.getElementById('pNegocio').value   = p.negocio   || '';
+    document.getElementById('pNombre').value    = p.nombre    || '';
+    document.getElementById('pTel').value       = p.tel       || '';
+    document.getElementById('pEmail').value     = p.email     || '';
+    document.getElementById('pInstagram').value = p.instagram || '';
+    document.getElementById('pFacebook').value  = p.facebook  || '';
+    document.getElementById('pDireccion').value = p.direccion || '';
+    document.getElementById('pCiudad').value    = p.ciudad    || '';
+    document.getElementById('pSlogan').value    = p.slogan    || '';
+    if (p.logo) {
+      logoBase64 = p.logo;
+      mostrarLogoPreview(p.logo);
+    }
+    document.getElementById('badgeGuardado').classList.add('visible');
+  } catch(e) {}
+}
+
+function getPerfil() {
+  const raw = localStorage.getItem('insumosPerfil');
+  if (!raw) return {};
+  try { return JSON.parse(raw); } catch(e) { return {}; }
+}
+
+/* ─────────────────────────────────────────────
+   CONDICIONES — GUARDAR / CARGAR
+───────────────────────────────────────────── */
+const COND_DEFAULTS = {
+  condiciones: 'Este presupuesto tiene validez de 7 días calendario. Los precios pueden variar según disponibilidad de stock. Garantía de 30 días en productos originales.',
+  formaPago:   'Pago al momento de la entrega. Se aceptan efectivo y transferencia bancaria. No se realizan devoluciones en productos abiertos o utilizados.',
+  incluye:     'Productos detallados en esta cotización. No incluye instalación ni reparación de equipos salvo que se especifique como servicio técnico.',
+};
+
+function cargarCondiciones() {
+  let data = COND_DEFAULTS;
+  try {
+    const raw = localStorage.getItem('insumosCondiciones');
+    if (raw) data = { ...COND_DEFAULTS, ...JSON.parse(raw) };
+  } catch(e) {}
+  document.getElementById('editCondiciones').textContent = data.condiciones;
+  document.getElementById('editFormaPago').textContent   = data.formaPago;
+  document.getElementById('editIncluye').textContent     = data.incluye;
+
+  ['editCondiciones', 'editFormaPago', 'editIncluye'].forEach(id => {
+    document.getElementById(id).addEventListener('input', guardarCondiciones);
+  });
+}
+
+function guardarCondiciones() {
+  const data = {
+    condiciones: document.getElementById('editCondiciones').innerText,
+    formaPago:   document.getElementById('editFormaPago').innerText,
+    incluye:     document.getElementById('editIncluye').innerText,
+  };
+  localStorage.setItem('insumosCondiciones', JSON.stringify(data));
+}
+
+function getCondiciones() {
+  try {
+    const raw = localStorage.getItem('insumosCondiciones');
+    return raw ? { ...COND_DEFAULTS, ...JSON.parse(raw) } : COND_DEFAULTS;
+  } catch(e) { return COND_DEFAULTS; }
+}
+
+/* ─────────────────────────────────────────────
+   LOGO UPLOAD
+───────────────────────────────────────────── */
+function handleLogoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 3 * 1024 * 1024) {
+    showToast('⚠️ El logo no debe superar 3 MB'); return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    logoBase64 = e.target.result;
+    mostrarLogoPreview(logoBase64);
+  };
+  reader.readAsDataURL(file);
+}
+
+function mostrarLogoPreview(src) {
+  const img = document.getElementById('logoPreview');
+  const ph  = document.getElementById('logoPlaceholder');
+  img.src = src;
+  img.style.display = 'block';
+  ph.style.display  = 'none';
+}
+
+function quitarLogo() {
+  logoBase64 = '';
+  document.getElementById('logoPreview').style.display = 'none';
+  document.getElementById('logoPlaceholder').style.display = 'block';
+  document.getElementById('logoInput').value = '';
+}
+
+/* ─────────────────────────────────────────────
+   PRECIOS PERSONALIZADOS — GUARDAR / CARGAR
+───────────────────────────────────────────── */
+function cargarPrecios() {
+  const raw = localStorage.getItem('insumosPrecios');
+  if (!raw) return;
+  try { preciosCustom = JSON.parse(raw); } catch(e) { preciosCustom = {}; }
+}
+
+function guardarPrecios() {
+  localStorage.setItem('insumosPrecios', JSON.stringify(preciosCustom));
+}
+
+function precioChanged(id, value) {
+  const precio = parseFloat(value);
+  if (!isNaN(precio) && precio >= 0) {
+    preciosCustom[id] = precio;
+    guardarPrecios();
+  }
+  calcular();
+}
+
+/* ─────────────────────────────────────────────
+   BADGES DE EVENTO
+───────────────────────────────────────────── */
+function setupBadges() {
+  document.querySelectorAll('.event-badge').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.event-badge').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      tipoEvento = b.dataset.type;
+    });
+  });
+}
+
+/* ─────────────────────────────────────────────
+   RENDER TABLA DE ITEMS
+───────────────────────────────────────────── */
+function renderItems() {
+  const tbody = document.getElementById('itemsBody');
+  tbody.innerHTML = ITEMS.map(item => `
+    <tr>
+      <td>
+        <div class="item-name">${item.nombre}</div>
+        <div class="item-unit">${item.unidad}</div>
+      </td>
+      <td>
+        <input type="number" class="price-input" id="price_${item.id}"
+               value="${preciosCustom[item.id] ?? item.precio}" min="0"
+               title="Clic para editar el precio"
+               oninput="precioChanged('${item.id}', this.value)" />
+      </td>
+      <td style="text-align:center">
+        <input type="number" class="qty-input" id="qty_${item.id}"
+               placeholder="0" min="0" value="" oninput="calcular()" />
+      </td>
+      <td class="subtotal-cell" id="sub_${item.id}">₲ 0</td>
+    </tr>
+  `).join('');
+}
+
+/* ─────────────────────────────────────────────
+   ITEMS PERSONALIZADOS
+───────────────────────────────────────────── */
+function agregarItemPersonalizado() {
+  const id = 'custom_' + (++customItemCount);
+  const div = document.createElement('div');
+  div.className = 'custom-item-row';
+  div.id = id;
+  div.innerHTML = `
+    <input type="text" placeholder="Nombre del item" id="${id}_nombre" oninput="calcular()" />
+    <input type="number" placeholder="Precio (₲)" id="${id}_precio" min="0" style="width:130px" oninput="calcular()" />
+    <input type="number" placeholder="Cant." id="${id}_qty" min="0" style="width:75px;text-align:center" oninput="calcular()" />
+    <button class="remove-btn" onclick="eliminarCustom('${id}')" title="Eliminar">✕</button>
+  `;
+  document.getElementById('customItems').appendChild(div);
+}
+
+function eliminarCustom(id) {
+  const el = document.getElementById(id);
+  if (el) { el.remove(); calcular(); }
+}
+
+/* ─────────────────────────────────────────────
+   HELPERS
+───────────────────────────────────────────── */
+function fmt(n) {
+  return '₲\u00a0' + Math.round(n).toLocaleString('es-PY');
+}
+function fmtPlain(n) {
+  return '₲ ' + Math.round(n).toLocaleString('es-PY');
+}
+function val(id) {
+  const v = parseFloat(document.getElementById(id)?.value) || 0;
+  return v;
+}
+
+/* ─────────────────────────────────────────────
+   CÁLCULO PRINCIPAL
+───────────────────────────────────────────── */
+function calcular() {
+  let detalle = [];
+  let totalItems = 0;
+
+  // Items estándar
+  ITEMS.forEach(item => {
+    const qty    = val('qty_' + item.id);
+    const precio = val('price_' + item.id) || item.precio;
+    const sub    = qty * precio;
+    document.getElementById('sub_' + item.id).textContent = sub > 0 ? fmt(sub) : '₲ 0';
+    if (sub > 0) {
+      totalItems += sub;
+      detalle.push({ nombre: item.nombre, qty, precio, sub });
+    }
+  });
+
+  // Items personalizados
+  document.querySelectorAll('[id^="custom_"]').forEach(row => {
+    const id = row.id;
+    if (!id.match(/^custom_\d+$/)) return;
+    const nombre = document.getElementById(id + '_nombre')?.value.trim() || 'Item personalizado';
+    const precio = parseFloat(document.getElementById(id + '_precio')?.value) || 0;
+    const qty    = parseFloat(document.getElementById(id + '_qty')?.value)    || 0;
+    const sub    = precio * qty;
+    if (sub > 0) {
+      totalItems += sub;
+      detalle.push({ nombre, qty, precio, sub });
+    }
+  });
+
+  // Mobiliario
+  const mesas  = val('cantMesas')  * val('precioMesa');
+  const sillas = val('cantSillas') * val('precioSilla');
+  if (mesas  > 0) detalle.push({ nombre: `Recargo impresoras (${val('cantMesas')})`,   qty: val('cantMesas'),  precio: val('precioMesa'),  sub: mesas  });
+  if (sillas > 0) detalle.push({ nombre: `Recargo equipos (${val('cantSillas')})`, qty: val('cantSillas'), precio: val('precioSilla'), sub: sillas });
+  totalItems += mesas + sillas;
+
+  const manoObra    = val('manoObra');
+  const traslado    = val('traslado');
+  const otrosGastos = val('otrosGastos');
+  const otrosDesc   = document.getElementById('otrosDesc')?.value.trim() || 'Otros gastos';
+
+  const totalCosto = totalItems + manoObra + traslado + otrosGastos;
+  const pct        = val('gananciaSlider') || 30;
+  const ganancia   = totalCosto * pct / 100;
+  const totalVenta = totalCosto + ganancia;
+
+  renderResumen({ detalle, manoObra, traslado, otrosGastos, otrosDesc, totalCosto, pct, ganancia, totalVenta });
+  return { detalle, manoObra, traslado, otrosGastos, otrosDesc, totalCosto, pct, ganancia, totalVenta };
+}
+
+/* ─────────────────────────────────────────────
+   RENDER RESUMEN (pantalla)
+───────────────────────────────────────────── */
+function renderResumen({ detalle, manoObra, traslado, otrosGastos, otrosDesc, totalCosto, pct, ganancia, totalVenta }) {
+  const nombre    = document.getElementById('nombreEvento').value.trim() || '—';
+  const fecha     = document.getElementById('fechaEvento').value;
+  const fechaFmt  = fecha ? new Date(fecha + 'T12:00:00').toLocaleDateString('es-PY', { day:'2-digit', month:'long', year:'numeric' }) : '—';
+
+  let html = `
+    <div class="resumen-row"><span class="lbl">Evento</span><span class="val">${nombre}</span></div>
+    <div class="resumen-row"><span class="lbl">Tipo</span><span class="val">${tipoEvento}</span></div>
+    <div class="resumen-row"><span class="lbl">Fecha</span><span class="val">${fechaFmt}</span></div>
+  `;
+
+  if (detalle.length > 0) {
+    html += '<div class="resumen-divider"></div>';
+    detalle.forEach(d => {
+      html += `<div class="resumen-row">
+        <span class="lbl">${d.nombre} × ${d.qty}</span>
+        <span class="val">${fmt(d.sub)}</span>
+      </div>`;
+    });
+  }
+
+  html += '<div class="resumen-divider"></div>';
+  if (manoObra    > 0) html += `<div class="resumen-row"><span class="lbl">📦 Insumos extra</span><span class="val">${fmt(manoObra)}</span></div>`;
+  if (traslado    > 0) html += `<div class="resumen-row"><span class="lbl">🚐 Traslado/envío</span><span class="val">${fmt(traslado)}</span></div>`;
+  if (otrosGastos > 0) html += `<div class="resumen-row"><span class="lbl">📦 ${otrosDesc}</span><span class="val">${fmt(otrosGastos)}</span></div>`;
+
+  html += `
+    <div class="resumen-divider"></div>
+    <div class="precio-costo">
+      <div>
+        <div class="lbl">💸 Precio de costo</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.4);margin-top:.2rem">Total de gastos sin ganancia</div>
+      </div>
+      <div class="val">${fmt(totalCosto)}</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;margin-bottom:.5rem">
+      <span style="font-size:.85rem;color:rgba(255,255,255,.55)">Ganancia (${pct}%)</span>
+      <span style="font-weight:700;color:var(--dorado-cl)">${fmt(ganancia)}</span>
+    </div>
+    <div class="precio-venta">
+      <div>
+        <div class="lbl">⭐ Precio de venta sugerido</div>
+        <div style="font-size:.78rem;color:rgba(240,217,142,.6);margin-top:.2rem">Con ${pct}% de ganancia incluida</div>
+      </div>
+      <div class="val">${fmt(totalVenta)}</div>
+    </div>
+  `;
+
+  document.getElementById('resumenDetalle').innerHTML = html;
+}
+
+/* ─────────────────────────────────────────────
+   NÚMERO DE COTIZACIÓN
+───────────────────────────────────────────── */
+function getSiguienteCotizacion() {
+  const n = parseInt(localStorage.getItem('insumosNumero') || '0') + 1;
+  localStorage.setItem('insumosNumero', String(n));
+  return 'INS-' + String(n).padStart(3, '0');
+}
+
+/* ─────────────────────────────────────────────
+   GENERAR PDF — LLENAR VISTA DE IMPRESIÓN
+───────────────────────────────────────────── */
+async function generarPDF() {
+  const datos = calcular();
+  if (!datos) return;
+
+  const { detalle, manoObra, traslado, otrosGastos, otrosDesc, totalCosto, pct, ganancia, totalVenta } = datos;
+  const p = getPerfil();
+
+  // Número de cotización
+  const cotNum = getSiguienteCotizacion();
+  document.getElementById('pvCotNum').textContent = cotNum;
+
+  // Fecha de emisión
+  const hoy = new Date().toLocaleDateString('es-PY', { day:'2-digit', month:'long', year:'numeric' });
+  document.getElementById('pvCotDate').textContent = 'Fecha: ' + hoy;
+
+  // Logo
+  const pvLogoImg = document.getElementById('pvLogoImg');
+  const pvLogoPh  = document.getElementById('pvLogoPlaceholder');
+  if (p.logo) {
+    pvLogoImg.src = p.logo;
+    pvLogoImg.style.display = 'block';
+    pvLogoPh.style.display  = 'none';
+  } else {
+    pvLogoImg.style.display = 'none';
+    pvLogoPh.style.display  = 'block';
+  }
+
+  // Datos del negocio
+  document.getElementById('pvBizName').textContent  = p.negocio  || 'Insumos de Impresión';
+  document.getElementById('pvDecName').textContent  = p.nombre   ? '👤 ' + p.nombre : '';
+  document.getElementById('pvSlogan').textContent   = p.slogan   || '';
+  document.getElementById('pvFooterBiz').textContent = p.negocio || 'Insumos de Impresión';
+
+  // Condiciones / forma de pago / incluye
+  const cond = getCondiciones();
+  document.getElementById('pvCondiciones').textContent = cond.condiciones;
+  document.getElementById('pvFormaPago').textContent   = cond.formaPago;
+  document.getElementById('pvIncluye').textContent     = cond.incluye;
+
+  // Contactos encabezado
+  const contactParts = [];
+  if (p.tel)       contactParts.push('📱 ' + p.tel);
+  if (p.email)     contactParts.push('✉️ ' + p.email);
+  if (p.instagram) contactParts.push('📷 ' + p.instagram);
+  if (p.facebook)  contactParts.push('👍 ' + p.facebook);
+  if (p.ciudad)    contactParts.push('📍 ' + p.ciudad);
+  document.getElementById('pvContacts').innerHTML = contactParts.map(c => `<span>${c}</span>`).join('');
+
+  // Contactos footer
+  const footerParts = [];
+  if (p.tel)       footerParts.push('📱 ' + p.tel);
+  if (p.email)     footerParts.push('✉️ ' + p.email);
+  if (p.instagram) footerParts.push('📷 ' + p.instagram);
+  if (p.ciudad)    footerParts.push('📍 ' + (p.direccion ? p.direccion + ', ' : '') + p.ciudad);
+  document.getElementById('pvFooterContacts').innerHTML = footerParts.map(c => `<span>${c}</span>`).join('');
+
+  // Datos del pedido
+  const nombreEvento = document.getElementById('nombreEvento').value.trim() || '—';
+  const fechaEvento  = document.getElementById('fechaEvento').value;
+  const fechaFmt     = fechaEvento ? new Date(fechaEvento + 'T12:00:00').toLocaleDateString('es-PY', { day:'2-digit', month:'long', year:'numeric' }) : '—';
+  const invitados    = document.getElementById('cantInvitados').value || '—';
+
+  document.getElementById('pvEvento').textContent     = nombreEvento;
+  document.getElementById('pvTipoEvento').textContent = tipoEvento;
+  document.getElementById('pvFecha').textContent      = fechaFmt;
+  document.getElementById('pvInvitados').textContent  = invitados;
+
+  // Tabla de items
+  const tbody = document.getElementById('pvTableBody');
+  if (detalle.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#aaa;padding:1rem">Sin ítems cargados</td></tr>`;
+  } else {
+    tbody.innerHTML = detalle.map(d => `
+      <tr>
+        <td class="td-nombre">${d.nombre}</td>
+        <td class="td-precio">${fmtPlain(d.precio)}</td>
+        <td style="text-align:center">${d.qty}</td>
+        <td class="td-sub" style="text-align:right">${fmtPlain(d.sub)}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Totales
+  document.getElementById('pvVenta').textContent    = fmtPlain(totalVenta);
+
+  const showRow = (rowId, valId, value, label) => {
+    const row = document.getElementById(rowId);
+    if (value > 0) {
+      row.style.display = 'flex';
+      document.getElementById(valId).textContent = fmtPlain(value);
+      if (label) document.getElementById(label).textContent = label === 'pvOtrosLabel'
+        ? (document.getElementById('otrosDesc')?.value.trim() || 'Otros gastos')
+        : '';
+    } else {
+      row.style.display = 'none';
+    }
+  };
+  showRow('pvRowManoObra', 'pvManoObra', manoObra);
+  showRow('pvRowTraslado', 'pvTraslado', traslado);
+  if (otrosGastos > 0) {
+    document.getElementById('pvRowOtros').style.display = 'flex';
+    document.getElementById('pvOtros').textContent      = fmtPlain(otrosGastos);
+    document.getElementById('pvOtrosLabel').textContent = otrosDesc || 'Otros gastos';
+  } else {
+    document.getElementById('pvRowOtros').style.display = 'none';
+  }
+
+  // PRO — Google Sheets & historial
+  const sheetsSaveStatus = document.getElementById('sheetsSaveStatus');
+  const cotNumText = document.getElementById('pvCotNum')?.textContent || '';
+  const clienteVal = document.querySelector('#nombreEvento')?.value || '';
+  const entry = {
+    cotNum: cotNumText,
+    cliente: clienteVal,
+    tipoPedido: tipoEvento || '',
+    fechaGenerado: new Date().toISOString(),
+    totalVenta: datos?.totalVenta || datos?.total || 0,
+    sentToSheets: false
+  };
+  const payload = {
+    cotNum: entry.cotNum,
+    fecha: new Date().toLocaleDateString('es-PY'),
+    cliente: entry.cliente,
+    tipoPedido: entry.tipoPedido,
+    totalVenta: entry.totalVenta,
+    negocio: document.getElementById('pNegocio')?.value || ''
+  };
+  if (sheetsSaveStatus) sheetsSaveStatus.innerHTML = '⏳ Enviando a Google Sheets...';
+  const sent = await sendToSheets(payload);
+  if (sent === true) { entry.sentToSheets = true; if (sheetsSaveStatus) { sheetsSaveStatus.innerHTML = '✅ Guardado en Google Sheets'; sheetsSaveStatus.style.color = '#2e7d32'; } }
+  else if (sent === false) { if (sheetsSaveStatus) { sheetsSaveStatus.innerHTML = '⚠️ No se pudo enviar a Google Sheets'; sheetsSaveStatus.style.color = '#e65100'; } }
+  else { if (sheetsSaveStatus) sheetsSaveStatus.innerHTML = ''; }
+  guardarEnHistorial(entry);
+  renderIngresos();
+
+  // Imprimir
+  window.print();
+}
+
+/* ─────────────────────────────────────────────
+   WHATSAPP
+───────────────────────────────────────────── */
+function compartirWhatsApp() {
+  const datos = calcular();
+  if (!datos) return;
+  const { detalle, manoObra, traslado, otrosGastos, otrosDesc, totalCosto, pct, ganancia, totalVenta } = datos;
+
+  const p = getPerfil();
+  const negocio = p.negocio || '';
+  const tel     = p.tel     || '';
+
+  const nombre   = document.getElementById('nombreEvento').value.trim() || 'Evento';
+  const fecha    = document.getElementById('fechaEvento').value;
+  const fechaFmt = fecha ? new Date(fecha + 'T12:00:00').toLocaleDateString('es-PY', { day:'2-digit', month:'long', year:'numeric' }) : '';
+
+  const lines = [];
+
+  if (negocio) lines.push(`🖨️ *${negocio.toUpperCase()}* 🖨️`);
+  else         lines.push(`🖨️ *PRESUPUESTO DE INSUMOS DE IMPRESIÓN* 🖨️`);
+  if (p.slogan) lines.push(`_${p.slogan}_`);
+  lines.push('');
+  lines.push(`🏢 *Cliente:* ${nombre}`);
+  if (fechaFmt) lines.push(`📅 *Fecha de entrega:* ${fechaFmt}`);
+  lines.push(`🔹 *Tipo:* ${tipoEvento}`);
+  lines.push('');
+
+  if (detalle.length > 0) {
+    lines.push(`*📋 Detalle:*`);
+    detalle.forEach(d => lines.push(`  • ${d.nombre} × ${d.qty} → ${fmtPlain(d.sub)}`));
+    lines.push('');
+  }
+
+  if (manoObra    > 0) lines.push(`📦 Insumos extra: ${fmtPlain(manoObra)}`);
+  if (traslado    > 0) lines.push(`🚐 Traslado: ${fmtPlain(traslado)}`);
+  if (otrosGastos > 0) lines.push(`📦 ${otrosDesc || 'Otros'}: ${fmtPlain(otrosGastos)}`);
+  if (manoObra + traslado + otrosGastos > 0) lines.push('');
+
+  lines.push(`💸 *Costo total:* ${fmtPlain(totalCosto)}`);
+  lines.push(`📈 *Ganancia (${pct}%):* ${fmtPlain(ganancia)}`);
+  lines.push('');
+  lines.push(`⭐ *TOTAL A COBRAR: ${fmtPlain(totalVenta)}*`);
+  lines.push('');
+
+  if (tel)    lines.push(`📱 Consultas: ${tel}`);
+  if (p.instagram) lines.push(`📷 Instagram: ${p.instagram}`);
+
+  lines.push('');
+  lines.push(`_Cotización generada el ${new Date().toLocaleDateString('es-PY')} 🇵🇾_`);
+
+  const url = 'https://wa.me/?text=' + encodeURIComponent(lines.join('\n'));
+  window.open(url, '_blank');
+}
+
+/* ─────────────────────────────────────────────
+   LIMPIAR FORMULARIO DEL EVENTO
+───────────────────────────────────────────── */
+function limpiarForm() {
+  if (!confirm('¿Limpiar los datos del evento? (El perfil se mantiene)')) return;
+  document.getElementById('nombreEvento').value  = '';
+  document.getElementById('fechaEvento').value   = new Date().toISOString().split('T')[0];
+  document.getElementById('cantMesas').value     = '';
+  document.getElementById('cantSillas').value    = '';
+  document.getElementById('cantInvitados').value = '';
+  document.getElementById('precioMesa').value    = 25000;
+  document.getElementById('precioSilla').value   = 8000;
+  document.getElementById('manoObra').value      = '';
+  document.getElementById('traslado').value      = '';
+  document.getElementById('otrosGastos').value   = '';
+  document.getElementById('otrosDesc').value     = '';
+  document.getElementById('gananciaSlider').value = 30;
+  document.getElementById('gananciaLabel').textContent = '30%';
+
+  // Reset tipo evento
+  document.querySelectorAll('.event-badge').forEach(b => b.classList.remove('active'));
+  document.querySelector('.event-badge[data-type="Cumpleaños"]').classList.add('active');
+  tipoEvento = 'Cumpleaños';
+
+  ITEMS.forEach(item => {
+    const el  = document.getElementById('qty_' + item.id);
+    const sub = document.getElementById('sub_' + item.id);
+    if (el)  el.value = '';
+    if (sub) sub.textContent = '₲ 0';
+  });
+  document.getElementById('customItems').innerHTML = '';
+  customItemCount = 0;
+  document.getElementById('resumenDetalle').innerHTML =
+    '<div class="empty-note" style="color:rgba(255,255,255,.4)">Completá los campos y presioná "Calcular" para ver tu presupuesto.</div>';
+}
+
+/* ─────────────────────────────────────────────
+   TOAST
+───────────────────────────────────────────── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════════
+// PRO — Google Sheets + Historial
+// ══════════════════════════════════════════════
+function getProConfig() {
+  try { return JSON.parse(localStorage.getItem('insumosProConfig') || '{}'); } catch(e) { return {}; }
+}
+function saveProConfig(cfg) {
+  localStorage.setItem('insumosProConfig', JSON.stringify(cfg));
+}
+function cargarProConfig() {
+  const cfg = getProConfig();
+  if (cfg.enabled) {
+    document.getElementById('sheetsToggle').classList.add('on');
+    document.getElementById('toggleLabel').textContent = 'Activado';
+    document.getElementById('sheetsFields').classList.add('visible');
+  }
+  if (cfg.url) document.getElementById('sheetsUrl').value = cfg.url;
+  renderIngresos();
+}
+function toggleSheets() {
+  const cfg = getProConfig();
+  cfg.enabled = !cfg.enabled;
+  const tog = document.getElementById('sheetsToggle');
+  const lbl = document.getElementById('toggleLabel');
+  const fld = document.getElementById('sheetsFields');
+  if (cfg.enabled) {
+    tog.classList.add('on'); lbl.textContent = 'Activado'; fld.classList.add('visible');
+  } else {
+    tog.classList.remove('on'); lbl.textContent = 'Desactivado'; fld.classList.remove('visible');
+  }
+  cfg.url = document.getElementById('sheetsUrl').value.trim();
+  saveProConfig(cfg);
+}
+async function verificarConexion() {
+  const url = document.getElementById('sheetsUrl').value.trim();
+  const st = document.getElementById('sheetsStatus');
+  if (!url) { st.innerHTML = '⚠️ Ingresá la URL del Apps Script primero.'; st.style.color='#e65100'; return; }
+  st.innerHTML = '⏳ Verificando conexión...'; st.style.color = 'inherit';
+  const cfg = getProConfig(); cfg.url = url; saveProConfig(cfg);
+  try {
+    const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    if (r.ok || r.type === 'opaque' || r.status === 0) {
+      st.innerHTML = '✅ Conexión verificada con el Apps Script.'; st.style.color = '#2e7d32';
+    } else {
+      st.innerHTML = `⚠️ El servidor respondió con código ${r.status}.`; st.style.color = '#e65100';
+    }
+  } catch(e) {
+    if (e.name === 'TimeoutError') {
+      st.innerHTML = '⚠️ Tiempo de espera agotado. Verificá la URL.'; st.style.color = '#e65100';
+    } else if (e.name === 'TypeError') {
+      st.innerHTML = '⚠️ No se pudo conectar (posible bloqueo CORS en modo GET — el envío POST igual funcionará).'; st.style.color = '#e65100';
+    } else {
+      st.innerHTML = '⚠️ Error de red: ' + e.message; st.style.color = '#e65100';
+    }
+  }
+}
+async function sendToSheets(payload) {
+  const cfg = getProConfig();
+  if (!cfg.enabled || !cfg.url) return null;
+  try {
+    await fetch(cfg.url, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    return true;
+  } catch(e) { return false; }
+}
+function getHistorial() {
+  try { return JSON.parse(localStorage.getItem('insumosProHistorial') || '[]'); } catch(e) { return []; }
+}
+function guardarEnHistorial(entry) {
+  const h = getHistorial();
+  h.unshift(entry);
+  if (h.length > 200) h.length = 200;
+  localStorage.setItem('insumosProHistorial', JSON.stringify(h));
+}
+function limpiarHistorial() {
+  if (!confirm('¿Borrar todo el historial de cotizaciones?')) return;
+  localStorage.removeItem('insumosProHistorial');
+  renderIngresos();
+}
+function renderIngresos() {
+  const h = getHistorial();
+  const statsEl = document.getElementById('ingresosStats');
+  const histEl = document.getElementById('ingresosHistorial');
+  if (!statsEl) return;
+  if (h.length === 0) {
+    statsEl.innerHTML = '<p style="color:rgba(255,255,255,.4);font-size:.9rem;text-align:center;padding:1rem 0;">Aún no hay cotizaciones registradas. Generá tu primer PDF para empezar.</p>';
+    histEl.innerHTML = '';
+    return;
+  }
+  const now = new Date();
+  const mesActual = now.getMonth(), anioActual = now.getFullYear();
+  const delMes = h.filter(e => {
+    const d = new Date(e.fechaGenerado);
+    return d.getMonth() === mesActual && d.getFullYear() === anioActual;
+  });
+  const totalMes = delMes.reduce((s,e) => s + (e.totalVenta||0), 0);
+  const cotsMes = delMes.length;
+  const promedioMes = cotsMes ? Math.round(totalMes / cotsMes) : 0;
+  statsEl.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.25rem;">
+      <div class="stat-box"><div class="stat-val">₲ ${fmt(totalMes)}</div><div class="stat-lbl">Total este mes</div></div>
+      <div class="stat-box"><div class="stat-val">${cotsMes}</div><div class="stat-lbl">Cotizaciones este mes</div></div>
+      <div class="stat-box"><div class="stat-val">₲ ${fmt(promedioMes)}</div><div class="stat-lbl">Promedio por cotización</div></div>
+      <div class="stat-box"><div class="stat-val">${h.length}</div><div class="stat-lbl">Total historial</div></div>
+    </div>`;
+  const ultimos = h.slice(0, 10);
+  histEl.innerHTML = '<div style="font-size:.82rem;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.04em;">Últimas 10 cotizaciones</div>' +
+    ultimos.map(e => {
+      const d = new Date(e.fechaGenerado);
+      const fecha = d.toLocaleDateString('es-PY', {day:'2-digit',month:'2-digit',year:'numeric'});
+      return `<div class="historial-item">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem;">
+          <div>
+            <span style="font-weight:700;color:#A5D6A7;">${e.cotNum}</span>
+            <span style="color:rgba(255,255,255,.5);margin-left:.5rem;font-size:.88rem;">${e.cliente || '—'}</span>
+            ${e.tipoPedido ? `<span style="margin-left:.5rem;font-size:.8rem;background:rgba(165,214,167,.15);color:#A5D6A7;padding:.1rem .45rem;border-radius:8px;">${e.tipoPedido}</span>` : ''}
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700;color:#A5D6A7;">₲ ${fmt(e.totalVenta||0)}</div>
+            <div style="font-size:.78rem;color:rgba(255,255,255,.35);">${fecha} ${e.sentToSheets ? '✅' : ''}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+}
+function exportarResumenWsp() {
+  const h = getHistorial();
+  if (h.length === 0) { alert('No hay historial para exportar.'); return; }
+  const now = new Date();
+  const mesActual = now.getMonth(), anioActual = now.getFullYear();
+  const delMes = h.filter(e => {
+    const d = new Date(e.fechaGenerado);
+    return d.getMonth() === mesActual && d.getFullYear() === anioActual;
+  });
+  const totalMes = delMes.reduce((s,e) => s + (e.totalVenta||0), 0);
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  let msg = `🖨️ *RESUMEN DE INGRESOS — ${meses[mesActual].toUpperCase()} ${anioActual}*\n\n`;
+  msg += `📦 Cotizaciones: ${delMes.length}\n`;
+  msg += `💰 Total: ₲ ${fmtPlain(totalMes)}\n`;
+  if (delMes.length) msg += `📊 Promedio: ₲ ${fmtPlain(Math.round(totalMes/delMes.length))}\n`;
+  msg += `\n*Detalle:*\n`;
+  delMes.slice(0,10).forEach(e => {
+    msg += `• ${e.cotNum} — ${e.cliente||'—'} — ₲ ${fmtPlain(e.totalVenta||0)}\n`;
+  });
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+</script>
+
+</body>
+</html>
